@@ -1,7 +1,18 @@
 import axios from 'axios'
 import cheerio from 'cheerio'
+import {encode, decode} from 'node-base64-image';
 // import fetch from 'fetch'
-import { mangangato_host, mangapill_host, print } from '../resources/utilities.js' // TODO: export status codes 
+import { 
+	SUCESSFUL,
+	NOT_FOUND,
+	FORBIDEEN,
+	CRASH,
+	USER_AGENT,
+	mangangato_host, 
+	mangapill_host, 
+	print ,
+	
+} from '../resources/utilities.js' // TODO: export status codes 
 
 export class ManganatoParser {
     constructor(){
@@ -9,15 +20,52 @@ export class ManganatoParser {
         this.base_two_host = "https://ww5.mangakakalot.tv"
     }
 	
-	async get_panels(manga_id, chapter, site) {
-		if (site === 1) {
+	async get_panel(source, callback) {
+		const options = {
+		  string: true,
+		  headers: {
+			"User-Agent": USER_AGENT,
+			"accept": "image/avif,image/webp,image/apng,image/svg+xml,image/,/*;q=0.8",
+			"accept-language": "en-US,en;q=0.9",
+			"sec-ch-ua": '"Google Chrome";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
+			"sec-ch-ua-mobile": "?0",
+			"sec-ch-ua-platform": "Windows",
+			"sec-fetch-dest": "image",
+			"sec-fetch-mode": "no-cors",
+			"sec-fetch-site": "cross-site",
+			"Referer": this.base_one_host,
+			"Referrer-Policy": "strict-origin-when-cross-origin",
+		  }
+		};
+		const raw_base64 = await encode(source, options).catch(error => {
+			callback({ error: error, status_code: error.status_code })
+			return null
+		})
+        const prefix = "data:jpeg;base64,";
+		const base64 = prefix + raw_base64
+		const response_data = {
+			data: {
+				base64: base64
+			},
+			status_code: SUCESSFUL,
+		}
+		
+		callback(response_data)
+		return null	
+	}
+	
+	async get_panels(manga_id, chapter, site, callback) {
+		if (site == 1) {
 			const read_url = `${this.base_one_host}/${manga_id}/${chapter}`
 			const request_option = {
 			  method: 'GET',
 			  url: read_url,
 			}
 			
-			const manga_response = await axios(request_option).catch(e => print(e))
+			const manga_response = await axios(request_option).catch(error => {
+				callback({ error: error, status_code: error.status_code })
+				return null
+			})
 			const status_code = manga_response.status 
 			
 			if(status_code) {
@@ -30,8 +78,8 @@ export class ManganatoParser {
 						status_code: 404,
 						message: "this manga request is not found",
 					}
-					
-					return response_data
+					callback(response_data)
+					return null	
 				}
 				
 				const manga_title = $(".panel-breadcrumb>.a-h:nth-child(3)").text()
@@ -44,10 +92,12 @@ export class ManganatoParser {
 					const this_ele = $(this)
 					const title = this_ele.attr("title")
 					const src = this_ele.attr("src")
+					const encoded_url = encodeURIComponent(src)
 									
 					panels.push({
 						title,
 						src,
+						encoded_url
 					})
 				})
 				
@@ -68,7 +118,8 @@ export class ManganatoParser {
 					},
 				}
 				
-				return response_data
+				callback(response_data)
+				return null	
 			}
 
 			if(status_code === 404) {
@@ -77,15 +128,17 @@ export class ManganatoParser {
 					message: "request not found",
 				}
 				
-				return response_data
+				callback(response_data)
+				return null	
 			}	
 			
 			const response_data = {
 				status_code: status_code,
 				message: "unexecpted issue",
 			}
-			
-			return response_data
+				
+			callback(response_data)
+			return null	
 		}
 		
 		const scrape_url = `${this.base_two_host}/chapter/${manga_id}/${chapter}`
@@ -93,11 +146,11 @@ export class ManganatoParser {
 		  method: 'GET',
 		  url: scrape_url,
 		} 
-		try {
-			const manga_response = await axios(request_option)
-		} catch (err) {
-			return { error: err };
-		}
+		const manga_response = await axios(request_option).catch(error => {
+			callback({ error: error, status_code: error.status_code })
+			return null
+		})
+		
 		const status_code = manga_response.status
 		
 		if(status_code) {
@@ -111,7 +164,8 @@ export class ManganatoParser {
 					message: "this manga request is not found",
 				}
 				
-				return response_data
+				callback(response_data)
+				return null
 			}
 			
 			const manga_title = $('span:nth-child(4) span').text()
@@ -122,12 +176,12 @@ export class ManganatoParser {
 			
 			$(".img-loading").each(async function(i, ele) {
 				const this_ele = $(this)
-				const title = this_ele.attr("title").replace(" - Mangakakalot", "")
-				const src = this_ele.data("src")
+				const title = this_ele.attr("title").replace(" - Manganato", "")
+				const source = this_ele.data("src")
 							
 				panels.push({
 					title,
-					src,
+					source,
 				})
 			})
 			
@@ -148,7 +202,8 @@ export class ManganatoParser {
 				},
 			}
 			
-			return response_data
+			callback(response_data)
+			return null
 		}
 
 		if(status_code === 404) {
@@ -157,7 +212,8 @@ export class ManganatoParser {
 				message: "request not found",
 			}
 			
-			return response_data
+			callback(response_data)
+			return null
 		}
 		
 		const response_data = {
@@ -165,7 +221,8 @@ export class ManganatoParser {
 			message: "unexecpted issue",
 		}
 		
-		return response_data	
+		callback(response_data)
+		return null	
 	}
 	
 	async get_manga_info(manga_id, callback) {
@@ -174,11 +231,14 @@ export class ManganatoParser {
 		  method: 'GET',
 		  url: scrape_url,
 		}
-		print(request_option)
-		const manga_response = await axios(request_option).catch(error => callback({ error: error, status_code: error.status_code }))
-		const status_code = manga_response.status 
+		const manga_response = await axios(request_option).catch(error => {
+			callback({ error: error, status_code: error.status_code })
+			return null
+		})
+		const status_code = manga_response.status
+				
 		
-		if(status_code) {
+		if(status_code == 200) {
 			const html = manga_response.data
 			const $ = cheerio.load(html);
 			const title = $('head > title').text()
@@ -190,51 +250,53 @@ export class ManganatoParser {
 				}
 				
 				callback(response_data)
+				return null
 			}
 			
-			const manga_title = $('.manga-info-text>li>h1').text()
-			const summary = $('#noidungm').text()
-			const alt_names = $('.manga-info-text>li>h2.story-alternative').text()
-			const status = $('.manga-info-text>li:nth-child(3)').text().replace("Status : ", "")
-			const updates = $('.manga-info-text>li:nth-child(4)').text().replace("Last updated : ", "")
-			const groups = $('.manga-info-text>li:nth-child(5)').text().replace("TransGroup : ", "")
-			const views = $('.manga-info-text>li:nth-child(6)').text().replace("View : ", "")
-			const rates = $('.manga-info-text>li:nth-child(8)>em').text().replace("Mangakakalot.com rate : ", "").split("/")[0]
+			const image_url = $('.info-image>.img-loading').attr("src")
+			const manga_title = $('.story-info-right>h1').text()
+			const description = $('#panel-story-info-description').text().replace("\nDescription :\n", "")
+			const alt_names = $('.variations-tableInfo tr:nth-child(1)>.table-value>h2').text()
+			const status = $('.variations-tableInfo tr:nth-child(3)>.table-value').text()
+			const updates = $('.story-info-right-extent>p:nth-child(1)>span.stre-value').text()
+			// const groups = $('.manga-info-text>li:nth-child(5)').text().replace("TransGroup : ", "")
+			const views = $('.story-info-right-extent>p:nth-child(2)>span.stre-value').text()
+			const rates = $('#rate_row_cmd>em>em:nth-child(2)>em>em:nth-child(1)').text()+"/5"
 			let genres = []
-			$('.manga-info-text>li:nth-child(7)>a').each(async function(i, ele) {
+			$('.variations-tableInfo tr:nth-child(4)>.table-value>.a-h').each(async function(i, ele) {
 				const this_ele = $(this)
-				const uri = this_ele.attr("href").split("?")[1]  //? https://mangakakalot.com/manga_list?type=newest&category=10&state=all&page=1
+				const temp = this_ele.attr("href").split("/") //? https://manganato.com/manga_list?type=newest&category=10&state=all&page=1
+				const id = temp[temp.length-1]
 				const name = this_ele.text()
 							
 				genres.push({
-					genre_name,
-					genre_uri,
+					name,
+					id,
 				})
 			})
 			let authors = []
-			$('.manga-info-text>li:nth-child(2)>a').each(async function(i, ele) {
+			$('.variations-tableInfo tr:nth-child(2)>.table-value>.a-h').each(async function(i, ele) {
 				const this_ele = $(this)
-				const temp = this_ele.attr("href").split("/")  //? https://mangakakalot.com/search/author/OztyeXVraXNoaTA3
-				const author_id = temp[temp.length-1]
-				const author_name = this_ele.text()
+				const temp = this_ele.attr("href").split("/")  //? https://manganato.com/author/story/fHlvbW9naW1vY2hp
+				const id = temp[temp.length-1]
+				const name = this_ele.text()
 							
 				authors.push({
-					author_id,
-					author_name,
+					id,
+					name,
 				})
 			})
 			let chapters = []
-			$('div.chapter-list>div.row').each(async function(i, ele) {
+			$('.row-content-chapter>li.a-h').each(async function(i, ele) {
 				const this_ele = $(this)
-				const link_ele = this_ele.childeren("span>a")
-				const views = this_ele.childeren("span:nth-child(2)").text()
-				const time = this_ele.childeren("span:nth-child(3)").text()
+				const link_ele = this_ele.children("a")
+				const views = this_ele.children("span.chapter-view").text()
+				const time = this_ele.children("span.chapter-time").text()
 				const temp = link_ele.attr("href").split("/")  
 				const hostname = temp[temp.length-3] 
 				const manga_id = temp[temp.length-2]
 				const chapter = temp[temp.length-1]
 				const name = link_ele.text()
-				const fsc = hostname == "mangakakalot.com" ? false : true //*** fsc==="full-scale-capable" that means it be used on base_one_host and base_two_host
 							
 				chapters.push({
 					manga_id,
@@ -242,7 +304,6 @@ export class ManganatoParser {
 					name,
 					views,
 					time,
-					fsc,
 				})
 			})
 			const referer =  new URL(scrape_url);
@@ -255,14 +316,14 @@ export class ManganatoParser {
 					host: host,
 					referer: referer,
 					url: scrape_url,
+					image_url: image_url,
 					manga_id: manga_id,
 					manga_title: manga_title,
-					summary: summary,
-					alt_names: alt_names,
+					description: description,
 					alt_names: alt_names,
 					status: status,
 					updates: updates,
-					groups: groups,
+					// groups: groups,
 					views: views,
 					rates: rates,
 					genres: genres,
@@ -273,6 +334,7 @@ export class ManganatoParser {
 			}
 			
 			callback(response_data)
+			return null
 		}
 
 		if(status_code === 404) {
@@ -282,10 +344,11 @@ export class ManganatoParser {
 			}
 			
 			callback(response_data)
+			return null
 		}	
 		
 		const response_data = {
-			status_code: status_code,
+			status_code: 503,
 			message: "unexecpted issue",
 		}
 		
