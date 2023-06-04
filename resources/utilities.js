@@ -27,6 +27,7 @@ const mangafoxfun_host = 'https://mangafox.fun';
 const nhentai_host = 'https://nhentai.net';
 const imhentai_host = 'https://imhentai.xxx';
 const kisscartoon_host = 'https://www1.kisscartoon.online';
+const 9anime_host = 'https://9animetv.to';
 const print = (msg) => console.log(msg);
 
 export {
@@ -48,5 +49,6 @@ export {
   nhentai_host,
   imhentai_host,
   kisscartoon_host,
+  9anime_host,
   print,
 };
