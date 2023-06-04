@@ -4,7 +4,9 @@
   "main": "base.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "devStart": "nodemon base.js"
+    "start": "npx prettier --write . && eslint && nodemon base.js",
+    "format": "npx prettier --write .",
+    "lint": "eslint"
   },
   "type": "module",
   "keywords": [],
@@ -17,5 +19,16 @@
     "node-base64-image": "^2.0.5",
     "node-fetch": "^3.3.1"
   },
-  "description": ""
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "description": "",
+  "devDependencies": {
+    "eslint": "^8.42.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "prettier": "^2.8.8"
+  }
 }
