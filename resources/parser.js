@@ -1,7 +1,6 @@
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { encode, decode } from 'node-base64-image';
-// import fetch from 'fetch'
 import {
   SUCESSFUL,
   NOT_FOUND,
@@ -11,9 +10,9 @@ import {
   CRASH_MSG,
   USER_AGENT,
   mangangato_host,
-  mangapill_host,
+  nine_anime_host,
   print,
-} from '../resources/utilities.js'; // TODO: export status codes
+} from '../resources/utilities.js';
 
 export class ManganatoParser {
   constructor() {
@@ -208,7 +207,7 @@ export class ManganatoParser {
       callback({ error: error, status_code: error.status_code });
       return null;
     });
-    const prefix = 'data:jpeg;base64,';
+    const prefix = 'data:image/jpeg;base64,';
     const base64 = prefix + raw_base64;
     const response_data = {
       data: {
@@ -521,7 +520,8 @@ export class ManganatoParser {
   }
 
   async get_latest(status, callback) {
-    const scrape_url = `${mangangato_host}/genre-all?state=${status}`
+    if (!status) status = '';
+    const scrape_url = `${mangangato_host}/genre-all?state=${status}`;
     const request_option = {
       method: 'GET',
       url: scrape_url,
@@ -605,7 +605,8 @@ export class ManganatoParser {
   }
 
   async get_newest(status, callback) {
-    const scrape_url = `${mangangato_host}/genre-all?type=newest&state=${status}`
+    if (!status) status = '';
+    const scrape_url = `${mangangato_host}/genre-all?type=newest&state=${status}`;
     const request_option = {
       method: 'GET',
       url: scrape_url,
@@ -689,7 +690,8 @@ export class ManganatoParser {
   }
 
   async get_alltimes(status, callback) {
-    const scrape_url = `${mangangato_host}/genre-all?type=topview&state=${status}`
+    if (!status) status = '';
+    const scrape_url = `${mangangato_host}/genre-all?type=topview&state=${status}`;
     const request_option = {
       method: 'GET',
       url: scrape_url,
@@ -773,7 +775,7 @@ export class ManganatoParser {
   }
 
   async filter(genre, status, callback) {
-    const scrape_url = `${mangangato_host}/${genre}?state=${status}`
+    const scrape_url = `${mangangato_host}/${genre}?state=${status}`;
     const request_option = {
       method: 'GET',
       url: scrape_url,
@@ -857,7 +859,8 @@ export class ManganatoParser {
   }
 
   async get_genres(status, cache, callback) {
-    const scrape_url = `${mangangato_host}/genre-all?state=${status}`
+    if (!status) status = '';
+    const scrape_url = `${mangangato_host}/genre-all?state=${status}`;
     const request_option = {
       method: 'GET',
       url: scrape_url,
@@ -978,85 +981,78 @@ export class ManganatoParser {
   }
 }
 
-/*
-export default class MangapillParser {
-	get_panels = async function(manga_id, chapter) {
-		const read_url = `${mangapill_host}/chapters/${manga_id}/${chapter}`
+export class NineAnimeParser {
+  constructor() {
+    this.backup_host_1 = 'https://9anime.gs';
+    this.backup_host_2 = 'https://9anime.to';
+  }
 
-		const request_option = {
-		  method: 'get',
-		  url: read_url,
-		}
-		
-		const manga_response = await axios(request_option)
-		const status_code = manga_response.status 
-		
-		if(status_code) {
-			const html = manga_response.data
-			const $ = cheerio.load(html);
-			const title = $('head > title').text()
-			
-			if(title.search("404 ") != -1) {
-				const response_data = {
-					status_code: NOT_FOUND,
-					message: "this manga request is not found",
-				}
-				
-				return response_data
-			}
-			
-			const manga_title = $(".panel-breadcrumb>.a-h:nth-child(3)").text()
-			const chapter_title = $(".panel-breadcrumb>.a-h:nth-child(5)").text()
-			const referer =  new URL(read_url);
-			const host = referer.hostname
-			let panels = []
-			
-			$(".container-chapter-reader>img").each(async function(i, ele) {
-				const this_ele = $(this)
-				const title = this_ele.attr("title")
-				const src = this_ele.attr("src")
-								
-				panels.push({
-					title,
-					src,
-				})
-			})
-			
-			
-			const response_data = {
-				status_code: status_code,
-				message: "successful",
-				data: {
-					host: host,
-					referer: referer,
-					read_url: read_url,
-					manga_id: manga_id,
-					manga_title: manga_title,
-					chapter_title: chapter_title,
-					chapter: chapter,
-					panels_number: panels.length,
-					panels: panels,
-				},
-			}
-			
-			return response_data
-		}
+  //******* Home todo-list *********
+  // TODO: slider animes 9animetv.to
+  // TODO: Recent animes 9animetv.to
+  // TODO: top animes 9animetv.to
+  // TODO: schedule animes 9animetv.to
+  // TODO: coming animes 9anime.gs
+  // TODO: whole home page 9animetv.to
 
-		if(status_code === 404) {
-			const response_data = {
-				status_code: status_code,
-				message: "request not found",
-			}
-			
-			return response_data
-		}	
-		
-		const response_data = {
-			status_code: status_code,
-			message: "unexecpted issue",
-		}
-		
-		return response_data
-	}
+  async get_slider_animes(callback) {
+    const scrape_url = `${nine_anime_host}/home`;
+    const request_option = {
+      method: 'GET',
+      url: scrape_url,
+    };
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data;
+      const $ = cheerio.load(html);
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+      let sliders = [];
+      $('#slider>.swiper-wrapper>.swiper-slide>.deslide-item').each(async function (i, ele) {
+        const this_ele = $(this);
+        const info_wrapper = this_ele.children('.deslide-item-content');
+        const title = info_wrapper.children('.desi-head-title').children('a').text();
+        const description = info_wrapper.children('.desi-description').text().trim();
+        const anime_id = info_wrapper.children('.desi-buttons').children('a').attr('href').split('/')[2];
+        const image_url = this_ele
+          .children('.deslide-cover')
+          .children('.deslide-cover-img')
+          .children('.film-poster-img')
+          .attr('src');
+
+        sliders.push({
+		  anime_id,
+		  title,
+          image_url,
+		  description,
+        });
+      });
+
+      const response_data = {
+        status_code: status_code,
+        message: 'successful',
+        data: {
+          host: host,
+          referer: referer,
+          url: scrape_url,
+          sliders: sliders,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }
 }
-*/

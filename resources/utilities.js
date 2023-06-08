@@ -10,7 +10,6 @@ const NOT_FOUND_MSG = 'not found';
 const FORBIDEEN_MSG = 'request forbidden';
 const CRASH_MSG = 'unexpected issue';
 const HEADERS = {
-  accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/,/*;q=0.8',
   'accept-language': 'en-US,en;q=0.9',
   'sec-ch-ua': '"Google Chrome";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
   'sec-ch-ua-mobile': '?0',
@@ -27,7 +26,8 @@ const mangafoxfun_host = 'https://mangafox.fun';
 const nhentai_host = 'https://nhentai.net';
 const imhentai_host = 'https://imhentai.xxx';
 const kisscartoon_host = 'https://www1.kisscartoon.online';
-const 9anime_host = 'https://9animetv.to';
+const nine_anime_host = 'https://9animetv.to';
+const zoro_host = 'https://zoro.to';
 const print = (msg) => console.log(msg);
 
 export {
@@ -49,6 +49,7 @@ export {
   nhentai_host,
   imhentai_host,
   kisscartoon_host,
-  9anime_host,
+  nine_anime_host,
+  zoro_host,
   print,
 };
