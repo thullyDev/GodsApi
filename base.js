@@ -265,6 +265,26 @@ app.get("/anime/:site/:slug", async function (req, res) {
 
   res.status(data.status_code).json(data);
 });
+
+app.get("/anime/:site/servers/:episode_id", async function (req, res) {
+  const episode_id = req.params.episode_id;
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  if (site == 1) {
+    await nine_anime_parser.get_anime_episode_servers(episode_id, (results) => {
+      data = results;
+    });
+  }
+
+  // if ( site === 2) {
+  // await zoro_anime_parser.get_recent(site, (results) => {
+  // data = results;
+  // });
+  // }
+
+  res.status(data.status_code).json(data);
+});
 /************* ANIME=>end ****************/
 
 //? keep this route last

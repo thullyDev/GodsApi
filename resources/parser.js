@@ -11,6 +11,7 @@ import {
   USER_AGENT,
   mangangato_host,
   nine_anime_host,
+  zoro_host,
   print,
 } from "../resources/utilities.js";
 
@@ -1782,6 +1783,66 @@ export class NineAnimeParser {
           slug: slug,
           anime_id: anime_id,
           episodes: episodes,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }
+
+  async get_anime_episode_servers(episode_id, callback) {
+    const scrape_url = `${zoro_host}/ajax/v2/episode/servers?episodeId=${episode_id}`;
+    const request_option = {
+      method: "GET",
+      url: scrape_url,
+    };
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data.html;
+      const $ = cheerio.load(html);
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+      let sub_servers = [];
+      let dub_servers = [];
+      let servers = {
+        sub_servers,
+        dub_servers,
+      };
+      $(".server-item").each(function (i, ele) {
+        const this_ele = $(this);
+        const type = this_ele.data("type").toLowerCase();
+        const source_id = JSON.stringify(this_ele.data("id"))
+        const server_id = JSON.stringify(this_ele.data("server-id"))
+        const server_name = this_ele.text().trim()
+        servers[type + "_servers"].push({
+          type,
+          source_id,
+          server_id,
+          server_name,
+        });
+      });
+
+      const response_data = {
+        status_code: status_code,
+        message: "successful",
+        data: {
+          host: host,
+          referer: referer,
+          url: scrape_url,
+          servers: servers,
         },
       };
 
