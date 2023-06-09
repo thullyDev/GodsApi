@@ -143,4 +143,23 @@ app.get('/anime/:site/top_animes', async function (req, res) {
 
   res.status(data.status_code).json(data);
 });
+
+app.get('/anime/:site/recent', async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND };
+
+  if (site == 1) {
+    await nine_anime_parser.get_recent_animes((results) => {
+      data = results;
+    });
+  }
+
+  // if ( site === 2) {
+  // await zoro_anime_parser.get_recent(site, (results) => {
+  // data = results;
+  // });
+  // }
+
+  res.status(data.status_code).json(data);
+});
 /************* ANIME=>end ****************/

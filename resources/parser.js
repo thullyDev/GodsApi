@@ -988,9 +988,6 @@ export class NineAnimeParser {
   }
 
   //******* Home todo-list *********
-  // TODO: slider animes 9animetv.to
-  // TODO: Recent animes 9animetv.to
-  // TODO: top animes 9animetv.to
   // TODO: schedule animes 9animetv.to
   // TODO: coming animes 9anime.gs
   // TODO: whole home page 9animetv.to
@@ -1041,6 +1038,70 @@ export class NineAnimeParser {
           referer: referer,
           url: scrape_url,
           sliders: sliders,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }
+
+  async get_recent_animes(callback) {
+    const scrape_url = `${nine_anime_host}/home`;
+    const request_option = {
+      method: 'GET',
+      url: scrape_url,
+    };
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data;
+      const $ = cheerio.load(html);
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+      let animes = [];
+      $('.film_list-wrap>.flw-item>.film-poster').each(async function (i, ele) {
+        const this_ele = $(this);
+        const tick_item_wrapper = this_ele.find('.tick-item');
+        const poster_wrapper = this_ele.find('.film-poster-img');
+        const anime_id = this_ele.find('.film-poster-ahref').attr("href").split("/")[2]
+        const image_url = poster_wrapper.data('src');
+        const title = poster_wrapper.attr('alt');
+		let ticks = {}
+		tick_item_wrapper.each(async function (i, ele) {
+			const this_inner_ele = $(this)
+			const id = this_inner_ele.attr("class").split(" ")[1].split("-")[1]
+			const watch_type = this_inner_ele.text().trim()
+			
+			ticks[id] = watch_type
+		})
+
+        animes.push({
+			title,
+			image_url,
+			ticks,
+        });
+      });
+
+      const response_data = {
+        status_code: status_code,
+        message: 'successful',
+        data: {
+          host: host,
+          referer: referer,
+          url: scrape_url,
+          animes: animes,
         },
       };
 
