@@ -1026,10 +1026,10 @@ export class NineAnimeParser {
           .attr('src');
 
         sliders.push({
-		  anime_id,
-		  title,
+          anime_id,
+          title,
           image_url,
-		  description,
+          description,
         });
       });
 
@@ -1041,6 +1041,77 @@ export class NineAnimeParser {
           referer: referer,
           url: scrape_url,
           sliders: sliders,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }
+
+  async get_top_animes(callback) {
+    const scrape_url = `${nine_anime_host}/home`;
+    const request_option = {
+      method: 'GET',
+      url: scrape_url,
+    };
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data;
+      const $ = cheerio.load(html);
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+      let top_animes = {};
+      $('.anime-block-ul.anif-block-chart.tab-pane').each(async function (i, ele) {
+        const this_ele = $(this);
+        const top_id = this_ele.attr('id').split('-')[2];
+        const top_wrapper = this_ele.children('ul').children('li');
+        let list = [];
+        top_wrapper.each(async function (i, ele) {
+          const this_inner_ele = $(this);
+          const top_number = this_inner_ele.children('.film-number').children('span').text();
+          const image_url = this_inner_ele.children('.film-poster').children('img').data('src');
+          const title = this_inner_ele.children('.film-poster').children('img').attr('alt');
+          const anime_id = this_inner_ele
+            .children('.film-detail')
+            .children('.film-name')
+            .children('a')
+            .attr('href')
+            .split('/')[2];
+          const views = this_inner_ele.children('.film-detail').children('.fd-infor').children('.fdi-item').text();
+
+          list.push({
+            top_number,
+            title,
+            anime_id,
+            image_url,
+            views,
+          });
+        });
+
+        top_animes[top_id] = list;
+      });
+
+      const response_data = {
+        status_code: status_code,
+        message: 'successful',
+        data: {
+          host: host,
+          referer: referer,
+          url: scrape_url,
+          top_animes: top_animes,
         },
       };
 
