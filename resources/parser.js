@@ -1,5 +1,6 @@
 import axios from "axios";
 import cheerio from "cheerio";
+import CryptoJS from "crypto-js";
 import { encode, decode } from "node-base64-image";
 import {
   SUCESSFUL,
@@ -1824,9 +1825,9 @@ export class NineAnimeParser {
       $(".server-item").each(function (i, ele) {
         const this_ele = $(this);
         const type = this_ele.data("type").toLowerCase();
-        const source_id = JSON.stringify(this_ele.data("id"))
-        const server_id = JSON.stringify(this_ele.data("server-id"))
-        const server_name = this_ele.text().trim()
+        const source_id = JSON.stringify(this_ele.data("id"));
+        const server_id = JSON.stringify(this_ele.data("server-id"));
+        const server_name = this_ele.text().trim();
         servers[type + "_servers"].push({
           type,
           source_id,
@@ -1837,7 +1838,7 @@ export class NineAnimeParser {
 
       const response_data = {
         status_code: status_code,
-        message: "successful",
+        message: SUCESSFUL_MSG,
         data: {
           host: host,
           referer: referer,
@@ -1858,3 +1859,106 @@ export class NineAnimeParser {
     callback(response_data);
   }
 }
+
+
+export async function get_anime_episode_sources(server_id, callback) {
+    const url = `${zoro_host}/ajax/v2/episode/sources?id=${server_id}`;
+    const request_option = {
+      method: "GET",
+      url: url,
+    };
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const rapid_link = response.data.link;
+      const temp = rapid_link.split("?")[0].split("/");
+      const rapid_id = temp[temp.length - 1];
+      const rapid_sources_link = "https://rapid-cloud.co/ajax/embed-6/getSources?id=" + rapid_id;
+      const rapid_request_option = {
+        method: "GET",
+        url: rapid_sources_link,
+      };
+      const rapid_response = await axios(rapid_request_option).catch((error) => {
+        callback({ error: error, status_code: error.status_code });
+        return null;
+      });
+
+      if (rapid_response.data.encrypted == false) {
+        const source_data = rapid_response.data;
+        delete source_data.encrypted;
+        const referer = new URL(url);
+        const host = referer.hostname;
+
+        const response_data = {
+          status_code: status_code,
+          message: SUCESSFUL_MSG,
+          data: {
+            host: host,
+            referer: referer,
+            source_data: source_data,
+          },
+        };
+      }
+
+      const decrypt_key_link = "https://raw.githubusercontent.com/enimax-anime/key/e6/key.txt";
+      const decrypt_request_option = {
+        method: "GET",
+        url: decrypt_key_link,
+      };
+      const decrypt_response = await axios(decrypt_request_option).catch((error) => {
+        callback({ error: error, status_code: error.status_code });
+        return null;
+      });
+
+      const encrypted_source = rapid_response.data.sources;
+      const encrypted_bk_source = rapid_response.data.sourcesBackup;
+      const decrypt_key = decrypt_response.data;
+      let raw_sources = {};
+      let sources = "";
+      let raw_bk_sources = {};
+      let bk_sources = "";
+
+      try {
+        raw_sources = CryptoJS.AES.decrypt(encrypted_source, decrypt_key);
+        sources = JSON.parse(raw_sources.toString(CryptoJS.enc.Utf8));
+        raw_bk_sources = CryptoJS.AES.decrypt(encrypted_bk_source, decrypt_key);
+        bk_sources = JSON.parse(raw_sources.toString(CryptoJS.enc.Utf8));
+      } catch {
+        callback({ error: "couldn't get source", status_code: CRASH });
+        return null;
+      }
+
+      const source_data = rapid_response.data;
+      source_data.sources = sources;
+      source_data.sourcesBackup = bk_sources;
+
+      delete source_data.encrypted;
+
+      const referer = new URL(url);
+      const host = referer.hostname;
+
+      const response_data = {
+        status_code: status_code,
+        message: SUCESSFUL_MSG,
+        data: {
+          host: host,
+          referer: referer,
+          source_data: source_data,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }

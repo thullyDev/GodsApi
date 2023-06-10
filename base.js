@@ -1,7 +1,8 @@
 import express from "express";
+import morgan from "morgan";
 import axios from "axios";
 import cheerio from "cheerio";
-import { ManganatoParser, NineAnimeParser } from "./resources/parser.js";
+import { ManganatoParser, NineAnimeParser, get_anime_episode_sources } from "./resources/parser.js";
 import { PORT, SERVER_MSG, USER_AGENT, SUCESSFUL, NOT_FOUND, NOT_FOUND_MSG, print } from "./resources/utilities.js";
 
 const app = express();
@@ -9,6 +10,7 @@ const mnt_parser = new ManganatoParser();
 const nine_anime_parser = new NineAnimeParser();
 
 app.use(express.json());
+app.use(morgan("tiny"));
 
 app.listen(PORT, function () {
   print("GodsScraper-v1.0.0 ===> http://localhost:" + PORT);
@@ -285,9 +287,22 @@ app.get("/anime/:site/servers/:episode_id", async function (req, res) {
 
   res.status(data.status_code).json(data);
 });
+
+app.get("/anime/rapid/sources/:server_id", async function (req, res) {
+  const server_id = req.params.server_id;
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+    await get_anime_episode_sources(server_id, (results) => {
+      data = results;
+    });
+	
+  res.status(data.status_code).json(data);
+});
 /************* ANIME=>end ****************/
 
-//? keep this route last
+
+//? 404 HANDLER
 app.get("*", function (req, res) {
   res.status(NOT_FOUND).json(NOT_FOUND_MSG);
 });
+//? 404 HANDLER
