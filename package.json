@@ -1,0 +1,36 @@
+{
+  "name": "godsscraper",
+  "version": "1.0.0",
+  "main": "base.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx prettier --write . && eslint && nodemon base.js",
+    "format": "npx prettier --write .",
+    "lint": "eslint"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
+    "crypto-js": "^4.1.1",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "node-base64-image": "^2.0.5",
+    "node-fetch": "^3.3.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "description": "",
+  "devDependencies": {
+    "eslint": "^8.42.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "prettier": "^2.8.8"
+  }
+}
