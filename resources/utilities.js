@@ -32,9 +32,9 @@ const nine_anime_host = "https://9animetv.to";
 const zoro_host = "https://zoro.to";
 const print = (msg) => console.log(msg);
 const safify = (val) => {
-	if(!val) return ""
-	else return val
-}
+  if (!val) return "";
+  else return val;
+};
 
 export {
   PORT,

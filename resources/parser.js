@@ -1552,8 +1552,8 @@ export class NineAnimeParser {
       const $ = cheerio.load(html);
       const referer = new URL(scrape_url);
       const host = referer.hostname;
-	  const page = $(".ap__-input>.input-page").val()
-	  const pages = $(".ap__-input>.btn.btn-sm.btn-blank").text().replace("of ", "").replace("page", "")
+      const page = $(".ap__-input>.input-page").val();
+      const pages = $(".ap__-input>.btn.btn-sm.btn-blank").text().replace("of ", "").replace("page", "");
       let animes = [];
       $("div.anime-block-ul>ul.ulclear>li").each(async function (i, ele) {
         const this_ele = $(this);
@@ -1575,7 +1575,7 @@ export class NineAnimeParser {
           title,
           image_url,
           year,
-		  episodes,
+          episodes,
         });
       });
 
@@ -1587,10 +1587,10 @@ export class NineAnimeParser {
           referer: referer,
           url: scrape_url,
           animes: animes,
-		  meta_data: {
-			  page: page,
-			  pages: pages,
-		  }
+          meta_data: {
+            page: page,
+            pages: pages,
+          },
         },
       };
 
@@ -1623,8 +1623,8 @@ export class NineAnimeParser {
       const $ = cheerio.load(html);
       const referer = new URL(scrape_url);
       const host = referer.hostname;
-	  const page = $(".ap__-input>.input-page").val()
-	  const pages = $(".ap__-input>.btn.btn-sm.btn-blank").text().replace("of ", "").replace("page", "")
+      const page = $(".ap__-input>.input-page").val();
+      const pages = $(".ap__-input>.btn.btn-sm.btn-blank").text().replace("of ", "").replace("page", "");
       let animes = [];
       $(".film_list-wrap>.flw-item>.film-poster").each(async function (i, ele) {
         const this_ele = $(this);
@@ -1663,10 +1663,10 @@ export class NineAnimeParser {
           referer: referer,
           url: scrape_url,
           animes: animes,
-		  meta_data: {
-			  page: page,
-			  pages: pages,
-		  }
+          meta_data: {
+            page: page,
+            pages: pages,
+          },
         },
       };
 
