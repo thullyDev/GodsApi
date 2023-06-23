@@ -3,7 +3,7 @@ import morgan from "morgan";
 import axios from "axios";
 import cheerio from "cheerio";
 import favicon from "serve-favicon";
-import path from 'path';
+import path from "path";
 import {
   ManganatoParser,
   NineAnimeParser,
@@ -29,7 +29,6 @@ const mnt_parser = new ManganatoParser();
 const nine_anime_parser = new NineAnimeParser();
 const zoro_anime_parser = new ZoroAnimeParser();
 const __dirname = path.resolve();
-
 
 app.use(favicon(__dirname + "/images/icon.jpg"));
 app.use(express.json());
@@ -213,11 +212,11 @@ app.get("/anime/:site/sliders/", async function (req, res) {
     });
   }
 
-  // if ( site === 2) {
-  // await zoro_anime_parser.get_recent(site, (results) => {
-  // data = results;
-  // });
-  // }
+  if (site == 2) {
+    await zoro_anime_parser.get_slider_animes((results) => {
+      data = results;
+    });
+  }
 
   res.status(data.status_code).json(data);
 });

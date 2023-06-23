@@ -2103,6 +2103,82 @@ export class ZoroAnimeParser {
     };
   }
 
+  async get_slider_animes(callback) {
+    const scrape_url = `${zoro_host}/home`;
+    const request_option = {
+      method: "GET",
+      url: scrape_url,
+    };
+
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data;
+      const $ = cheerio.load(html);
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+      let sliders = [];
+      $("#slider>.swiper-wrapper>.swiper-slide>.deslide-item").each(async function (i, ele) {
+        const this_ele = $(this);
+        const info_wrapper = this_ele.children(".deslide-item-content");
+        const image_ele = this_ele.find(".film-poster-img");
+        const type = this_ele.find(".scd-item:first-child").text().trim();
+        const duration = this_ele.find(".scd-item:nth-child(2)").text().trim();
+        const date = this_ele.find(".scd-item:nth-child(3)").text().trim();
+        const quality = this_ele.find(".scd-item>span.quality").text().trim();
+        const title = image_ele.attr("alt");
+        const image_url = image_ele.data("src");
+        const description = info_wrapper.children(".desi-description").text().trim();
+        const slug = info_wrapper.children(".desi-buttons").children("a").attr("href").split("/")[2];
+        let ticks = {};
+        this_ele.find(".tick-item").each(async function (i, ele) {
+          const this_inner_ele = $(this);
+          const id = this_inner_ele.attr("class").split(" ")[1].split("-")[1];
+          const watch_type = this_inner_ele.text().trim();
+
+          ticks[id] = watch_type;
+        });
+
+        sliders.push({
+          slug,
+          title,
+          image_url,
+          description,
+          ticks,
+          type,
+          date,
+          quality,
+          duration,
+        });
+      });
+
+      const response_data = {
+        status_code: status_code,
+        message: "successful",
+        data: {
+          host: host,
+          referer: referer,
+          url: scrape_url,
+          sliders: sliders,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }
+
   async get_recent_animes(callback) {
     const scrape_url = `${zoro_host}/recently-updated`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
@@ -2193,67 +2269,6 @@ export class ZoroAnimeParser {
 
     callback(response_data);
   }
-
-  // async get_slider_animes(callback) {
-  // const scrape_url = `${zoro_host}/home`;
-  // const request_option = {
-  // method: "GET",
-  // url: scrape_url,
-  // };
-  // const response = await axios(request_option).catch((error) => {
-  // callback({ error: error, status_code: error.status_code });
-  // return null;
-  // });
-  // const status_code = response.status;
-
-  // if (status_code == SUCESSFUL) {
-  // const html = response.data;
-  // const $ = cheerio.load(html);
-  // const referer = new URL(scrape_url);
-  // const host = referer.hostname;
-  // let sliders = [];
-  // $("#slider>.swiper-wrapper>.swiper-slide>.deslide-item").each(async function (i, ele) {
-  // const this_ele = $(this);
-  // const info_wrapper = this_ele.children(".deslide-item-content");
-  // const title = info_wrapper.children(".desi-head-title").children("a").text();
-  // const description = info_wrapper.children(".desi-description").text().trim();
-  // const slug = info_wrapper.children(".desi-buttons").children("a").attr("href").split("/")[2];
-  // const image_url = this_ele
-  // .children(".deslide-cover")
-  // .children(".deslide-cover-img")
-  // .children(".film-poster-img")
-  // .attr("src");
-
-  // sliders.push({
-  // slug,
-  // title,
-  // image_url,
-  // description,
-  // });
-  // });
-
-  // const response_data = {
-  // status_code: status_code,
-  // message: "successful",
-  // data: {
-  // host: host,
-  // referer: referer,
-  // url: scrape_url,
-  // sliders: sliders,
-  // },
-  // };
-
-  // callback(response_data);
-  // return null;
-  // }
-
-  // const response_data = {
-  // status_code: CRASH,
-  // message: CRASH_MSG,
-  // };
-
-  // callback(response_data);
-  // }
 
   // async get_letter_animes(letter, page, callback) {
   // const scrape_url = `${nine_anime_host}/az-list/${letter}?page=${page}`;
