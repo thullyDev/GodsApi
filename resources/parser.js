@@ -2054,6 +2054,8 @@ export class ZoroAnimeParser {
         const this_ele = $(this);
         const tick_item_wrapper = this_ele.find(".tick-item");
         const poster_wrapper = this_ele.find(".film-poster-img");
+        const type = this_ele.find(".fdi-item:first-child").text();
+        const durataion = this_ele.find(".fdi-item.fdi-duration").text();
         const description = this_ele.find(".description").text();
         const temp_source = this_ele.find(".film-poster-ahref").attr("href");
         let source = zoro_host + "/anime" + temp_source;
@@ -2078,6 +2080,9 @@ export class ZoroAnimeParser {
           title,
           image_url,
           ticks,
+		  description,
+		  durataion,
+		  type,
         });
       });
 
