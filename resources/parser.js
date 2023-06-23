@@ -1948,7 +1948,7 @@ export class NineAnimeParser {
       const anime_detail_wrapper = $(".anime-detail");
       const title = anime_detail_wrapper.find(".film-name").text();
       const image_url = anime_detail_wrapper.find(".film-poster-img").attr("src");
-      const description = anime_detail_wrapper.find(".film-description").children(".shorting").text();
+      const description = anime_detail_wrapper.find(".film-description").children(".shorting").text().trim();
       const alternative_names = anime_detail_wrapper.find(".alias").text().split(",");
       const meta_details_items = anime_detail_wrapper.find(".meta").find(".item");
       let meta_items = {};
@@ -2056,7 +2056,7 @@ export class ZoroAnimeParser {
         const poster_wrapper = this_ele.find(".film-poster-img");
         const type = this_ele.find(".fdi-item:first-child").text();
         const durataion = this_ele.find(".fdi-item.fdi-duration").text();
-        const description = this_ele.find(".description").text();
+        const description = this_ele.find(".description").text().trim();
         const temp_source = this_ele.find(".film-poster-ahref").attr("href");
         let source = zoro_host + "/anime" + temp_source;
         const slug = temp_source.replace("/", "");
@@ -2080,9 +2080,9 @@ export class ZoroAnimeParser {
           title,
           image_url,
           ticks,
-		  description,
-		  durataion,
-		  type,
+          description,
+          durataion,
+          type,
         });
       });
 
