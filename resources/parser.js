@@ -2050,7 +2050,7 @@ export class ZoroAnimeParser {
       const pages = $(".page-item:last-child>.page-link").attr("href").split("?page=")[1];
 
       let animes = [];
-      $(".film_list-wrap>.flw-item>.film-poster").each(async function (i, ele) {
+      $(".film_list-wrap>.flw-item").each(async function (i, ele) {
         const this_ele = $(this);
         const tick_item_wrapper = this_ele.find(".tick-item");
         const poster_wrapper = this_ele.find(".film-poster-img");
