@@ -2029,6 +2029,726 @@ export class NineAnimeParser {
   }
 }
 
+export class ZoroAnimeParser {
+  async zoro_browsing_page_parser(scrape_url) {
+    const request_option = {
+      method: "GET",
+      url: scrape_url,
+    };
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data;
+      const $ = cheerio.load(html);
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+      const page = $(".page-item.active>.page-link").text();
+      const pages = $(".page-item:last-child>.page-link").attr("href").split("?page=")[1];
+
+      let animes = [];
+      $(".film_list-wrap>.flw-item>.film-poster").each(async function (i, ele) {
+        const this_ele = $(this);
+        const tick_item_wrapper = this_ele.find(".tick-item");
+        const poster_wrapper = this_ele.find(".film-poster-img");
+        const description = this_ele.find(".description").text();
+        const temp_source = this_ele.find(".film-poster-ahref").attr("href");
+        let source = zoro_host + "/anime" + temp_source;
+        const slug = temp_source.replace("/", "");
+        const temp = slug.split("-");
+        const anime = temp[temp.length - 1];
+        const image_url = poster_wrapper.data("src");
+        const title = poster_wrapper.attr("alt");
+        let ticks = {};
+        tick_item_wrapper.each(async function (i, ele) {
+          const this_inner_ele = $(this);
+          const id = this_inner_ele.attr("class").split(" ")[1].split("-")[1];
+          const watch_type = this_inner_ele.text().trim();
+
+          ticks[id] = watch_type;
+        });
+
+        animes.push({
+          source,
+          anime,
+          slug,
+          title,
+          image_url,
+          ticks,
+        });
+      });
+
+      return {
+        status_code: status_code,
+        message: "successful",
+        data: {
+          host: host,
+          referer: referer,
+          url: scrape_url,
+          animes: animes,
+          meta_data: {
+            page: page,
+            pages: pages,
+          },
+        },
+      };
+    }
+
+    return {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+  }
+
+  async get_recent_animes(callback) {
+    const scrape_url = `${zoro_host}/recently-updated`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_sub_animes(callback) {
+    const scrape_url = `${zoro_host}/subbed-anime`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_dub_animes(callback) {
+    const scrape_url = `${zoro_host}/dubbed-anime`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_popular_animes(callback) {
+    const scrape_url = `${zoro_host}/most-popular`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_top_airing_animes(callback) {
+    const scrape_url = `${zoro_host}/top-airing`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_new_animes(callback) {
+    const scrape_url = `${zoro_host}/recently-added`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_upcoming_animes(callback) {
+    const scrape_url = `${zoro_host}/top-upcoming`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_complateed_animes(callback) {
+    const scrape_url = `${zoro_host}/completed`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_movies_animes(callback) {
+    const scrape_url = `${zoro_host}/movie`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_tv_animes(callback) {
+    const scrape_url = `${zoro_host}/tv`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_ova_animes(callback) {
+    const scrape_url = `${zoro_host}/ova`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_ona_animes(callback) {
+    const scrape_url = `${zoro_host}/ona`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_special_animes(callback) {
+    const scrape_url = `${zoro_host}/special`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  // async get_slider_animes(callback) {
+  // const scrape_url = `${zoro_host}/home`;
+  // const request_option = {
+  // method: "GET",
+  // url: scrape_url,
+  // };
+  // const response = await axios(request_option).catch((error) => {
+  // callback({ error: error, status_code: error.status_code });
+  // return null;
+  // });
+  // const status_code = response.status;
+
+  // if (status_code == SUCESSFUL) {
+  // const html = response.data;
+  // const $ = cheerio.load(html);
+  // const referer = new URL(scrape_url);
+  // const host = referer.hostname;
+  // let sliders = [];
+  // $("#slider>.swiper-wrapper>.swiper-slide>.deslide-item").each(async function (i, ele) {
+  // const this_ele = $(this);
+  // const info_wrapper = this_ele.children(".deslide-item-content");
+  // const title = info_wrapper.children(".desi-head-title").children("a").text();
+  // const description = info_wrapper.children(".desi-description").text().trim();
+  // const slug = info_wrapper.children(".desi-buttons").children("a").attr("href").split("/")[2];
+  // const image_url = this_ele
+  // .children(".deslide-cover")
+  // .children(".deslide-cover-img")
+  // .children(".film-poster-img")
+  // .attr("src");
+
+  // sliders.push({
+  // slug,
+  // title,
+  // image_url,
+  // description,
+  // });
+  // });
+
+  // const response_data = {
+  // status_code: status_code,
+  // message: "successful",
+  // data: {
+  // host: host,
+  // referer: referer,
+  // url: scrape_url,
+  // sliders: sliders,
+  // },
+  // };
+
+  // callback(response_data);
+  // return null;
+  // }
+
+  // const response_data = {
+  // status_code: CRASH,
+  // message: CRASH_MSG,
+  // };
+
+  // callback(response_data);
+  // }
+
+  // async get_letter_animes(letter, page, callback) {
+  // const scrape_url = `${nine_anime_host}/az-list/${letter}?page=${page}`;
+  // const request_option = {
+  // method: "GET",
+  // url: scrape_url,
+  // };
+  // const response = await axios(request_option).catch((error) => {
+  // callback({ error: error, status_code: error.status_code });
+  // return null;
+  // });
+  // const status_code = response.status;
+
+  // if (status_code == SUCESSFUL) {
+  // const html = response.data;
+  // const $ = cheerio.load(html);
+  // const referer = new URL(scrape_url);
+  // const host = referer.hostname;
+  // const page = $(".ap__-input>.input-page").val();
+  // const pages = $(".ap__-input>.btn.btn-sm.btn-blank").text().replace("of ", "").replace("page", "");
+  // let animes = [];
+  // $("div.anime-block-ul>ul.ulclear>li").each(async function (i, ele) {
+  // const this_ele = $(this);
+  // const tick_item_wrapper = this_ele.find(".tick-item");
+  // const poster_wrapper = this_ele.find(".film-poster-img");
+  // const source = this_ele.find(".dynamic-name").attr("href");
+  // const year = this_ele.find(".fdi-item:nth-child(1)").text();
+  // const episodes = this_ele.find(".fdi-duration").text().trim().replace("Ep ", "");
+  // const slug = source.split("/")[2];
+  // const temp = slug.split("-");
+  // const anime_id = temp[temp.length - 1];
+  // const image_url = poster_wrapper.data("src");
+  // const title = poster_wrapper.attr("alt");
+
+  // animes.push({
+  // source,
+  // anime_id,
+  // slug,
+  // title,
+  // image_url,
+  // year,
+  // episodes,
+  // });
+  // });
+
+  // const response_data = {
+  // status_code: status_code,
+  // message: "successful",
+  // data: {
+  // host: host,
+  // referer: referer,
+  // url: scrape_url,
+  // animes: animes,
+  // meta_data: {
+  // page: page,
+  // pages: pages,
+  // },
+  // },
+  // };
+
+  // callback(response_data);
+  // return null;
+  // }
+
+  // const response_data = {
+  // status_code: CRASH,
+  // message: CRASH_MSG,
+  // };
+
+  // callback(response_data);
+  // }
+
+  // async get_search_animes(data, callback) {
+  // const scrape_url = `${nine_anime_host}/filter?keyword=${data.keyword}&type=${data.type}&status=${data.status}&season=${data.season}&language=${data.language}&sort=${data.sort}&year=${data.year}&genre=${data.genre}`;
+  // const request_option = {
+  // method: "GET",
+  // url: scrape_url,
+  // };
+  // const response = await axios(request_option).catch((error) => {
+  // callback({ error: error, status_code: error.status_code });
+  // return null;
+  // });
+  // const status_code = response.status;
+
+  // if (status_code == SUCESSFUL) {
+  // const html = response.data;
+  // const $ = cheerio.load(html);
+  // const referer = new URL(scrape_url);
+  // const host = referer.hostname;
+  // const page = $(".ap__-input>.input-page").val();
+  // const pages = $(".ap__-input>.btn.btn-sm.btn-blank").text().replace("of ", "").replace("page", "");
+  // let animes = [];
+  // $(".film_list-wrap>.flw-item>.film-poster").each(async function (i, ele) {
+  // const this_ele = $(this);
+  // const tick_item_wrapper = this_ele.find(".tick-item");
+  // const poster_wrapper = this_ele.find(".film-poster-img");
+  // const source = this_ele.find(".film-poster-ahref").attr("href");
+  // const slug = source.split("/")[2];
+  // const temp = slug.split("-");
+  // const anime = temp[temp.length - 1];
+  // const image_url = poster_wrapper.data("src");
+  // const title = poster_wrapper.attr("alt");
+  // let ticks = {};
+  // tick_item_wrapper.each(async function (i, ele) {
+  // const this_inner_ele = $(this);
+  // const id = this_inner_ele.attr("class").split(" ")[1].split("-")[1];
+  // const watch_type = this_inner_ele.text().trim();
+
+  // ticks[id] = watch_type;
+  // });
+
+  // animes.push({
+  // source,
+  // anime,
+  // slug,
+  // title,
+  // image_url,
+  // ticks,
+  // });
+  // });
+
+  // const response_data = {
+  // status_code: status_code,
+  // message: "successful",
+  // data: {
+  // host: host,
+  // referer: referer,
+  // url: scrape_url,
+  // animes: animes,
+  // meta_data: {
+  // page: page,
+  // pages: pages,
+  // },
+  // },
+  // };
+
+  // callback(response_data);
+  // return null;
+  // }
+
+  // const response_data = {
+  // status_code: CRASH,
+  // message: CRASH_MSG,
+  // };
+
+  // callback(response_data);
+  // }
+
+  // async get_watch_types(cache, callback) {
+  // const scrape_url = `${nine_anime_host}/home`;
+  // const request_option = {
+  // method: "GET",
+  // url: scrape_url,
+  // };
+  // const response = await axios(request_option).catch((error) => {
+  // callback({ error: error, status_code: error.status_code });
+  // return null;
+  // });
+  // const status_code = response.status;
+
+  // if (status_code == SUCESSFUL) {
+  // const html = response.data;
+  // const $ = cheerio.load(html);
+  // const referer = new URL(scrape_url);
+  // const host = referer.hostname;
+  // let watch_types = this.watch_types;
+  // if (!cache) {
+  // $(".sidebar-filter>.item").each(async function (i, ele) {
+  // const this_ele = $(this);
+  // const type_id = this_ele.children(".btn-filter").text().trim().toLowerCase().replace(" all", "");
+  // const item_wrapper = this_ele.find(".ul-filter").children("li");
+  // let items = [];
+  // item_wrapper.each(async function (i, ele) {
+  // const this_inner_ele = $(this);
+  // const id = this_inner_ele.attr("id");
+  // const name = this_inner_ele
+  // .find(".custom-control-label")
+  // .text()
+  // .replace(/\s/g, "")
+  // .replace(/([A-Z])/g, " $1")
+  // .trim()
+  // .replace("- ", "-");
+
+  // items.push({
+  // id,
+  // name,
+  // });
+  // });
+
+  // watch_types[type_id] = items;
+  // });
+  // }
+  // const response_data = {
+  // status_code: status_code,
+  // message: "successful",
+  // data: {
+  // host: host,
+  // referer: referer,
+  // url: scrape_url,
+  // watch_types: watch_types,
+  // },
+  // };
+
+  // callback(response_data);
+  // return null;
+  // }
+
+  // const response_data = {
+  // status_code: CRASH,
+  // message: CRASH_MSG,
+  // };
+
+  // callback(response_data);
+  // }
+
+  // async get_top_animes(callback) {
+  // const scrape_url = `${nine_anime_host}/home`;
+  // const request_option = {
+  // method: "GET",
+  // url: scrape_url,
+  // };
+  // const response = await axios(request_option).catch((error) => {
+  // callback({ error: error, status_code: error.status_code });
+  // return null;
+  // });
+  // const status_code = response.status;
+
+  // if (status_code == SUCESSFUL) {
+  // const html = response.data;
+  // const $ = cheerio.load(html);
+  // const referer = new URL(scrape_url);
+  // const host = referer.hostname;
+  // let top_animes = {};
+  // $(".anime-block-ul.anif-block-chart.tab-pane").each(async function (i, ele) {
+  // const this_ele = $(this);
+  // const top_id = this_ele.attr("id").split("-")[2];
+  // const top_wrapper = this_ele.children("ul").children("li");
+  // let list = [];
+  // top_wrapper.each(async function (i, ele) {
+  // const this_inner_ele = $(this);
+  // const top_number = this_inner_ele.children(".film-number").children("span").text();
+  // const image_url = this_inner_ele.children(".film-poster").children("img").data("src");
+  // const title = this_inner_ele.children(".film-poster").children("img").attr("alt");
+  // const slug = this_inner_ele
+  // .children(".film-detail")
+  // .children(".film-name")
+  // .children("a")
+  // .attr("href")
+  // .split("/")[2];
+  // const views = this_inner_ele.children(".film-detail").children(".fd-infor").children(".fdi-item").text();
+
+  // list.push({
+  // top_number,
+  // title,
+  // slug,
+  // image_url,
+  // views,
+  // });
+  // });
+
+  // top_animes[top_id] = list;
+  // });
+
+  // const response_data = {
+  // status_code: status_code,
+  // message: "successful",
+  // data: {
+  // host: host,
+  // referer: referer,
+  // url: scrape_url,
+  // top_animes: top_animes,
+  // },
+  // };
+
+  // callback(response_data);
+  // return null;
+  // }
+
+  // const response_data = {
+  // status_code: CRASH,
+  // message: CRASH_MSG,
+  // };
+
+  // callback(response_data);
+  // }
+
+  // async get_schedule_days(tz_offset, callback) {
+  // const scrape_url = `${nine_anime_host}/ajax/schedule/widget?tzOffset=${tz_offset}`;
+  // const request_option = {
+  // method: "GET",
+  // url: scrape_url,
+  // };
+  // const response = await axios(request_option).catch((error) => {
+  // callback({ error: error, status_code: error.status_code });
+  // return null;
+  // });
+  // const status_code = response.status;
+
+  // if (status_code == SUCESSFUL) {
+  // const html = response.data.html;
+  // const $ = cheerio.load(html);
+  // const referer = new URL(scrape_url);
+  // const host = referer.hostname;
+  // let dates = [];
+  // $(".day-item").each(async function (i, ele) {
+  // const this_ele = $(this);
+  // const whole_date = this_ele.data("date");
+  // const day = this_ele.find("span").text();
+  // const date = this_ele.find(".date").text();
+
+  // dates.push({
+  // whole_date,
+  // day,
+  // date,
+  // });
+  // });
+
+  // const response_data = {
+  // status_code: status_code,
+  // message: "successful",
+  // data: {
+  // host: host,
+  // referer: referer,
+  // url: scrape_url,
+  // dates: dates,
+  // },
+  // };
+
+  // callback(response_data);
+  // return null;
+  // }
+
+  // const response_data = {
+  // status_code: CRASH,
+  // message: CRASH_MSG,
+  // };
+
+  // callback(response_data);
+  // }
+
+  // async get_schedule_animes(tz_offset, date, callback) {
+  // const scrape_url = `${nine_anime_host}/ajax/schedule/list?tzOffset=${tz_offset}&date=${date}`;
+  // const request_option = {
+  // method: "GET",
+  // url: scrape_url,
+  // };
+  // const response = await axios(request_option).catch((error) => {
+  // callback({ error: error, status_code: error.status_code });
+  // return null;
+  // });
+  // const status_code = response.status;
+
+  // if (status_code == SUCESSFUL) {
+  // const html = response.data.html;
+  // const $ = cheerio.load(html);
+  // const referer = new URL(scrape_url);
+  // const host = referer.hostname;
+  // let dates = [];
+  // $(".tsl-link").each(async function (i, ele) {
+  // const this_ele = $(this);
+  // const slug = this_ele.attr("href").split("/")[2];
+  // const time = this_ele.find(".time").text();
+  // const name = this_ele.find(".film-name").text();
+  // const episode = this_ele.find(".btn-play").text().replace("Episode", "").trim();
+
+  // dates.push({
+  // slug,
+  // time,
+  // name,
+  // episode,
+  // });
+  // });
+
+  // const response_data = {
+  // status_code: status_code,
+  // message: "successful",
+  // data: {
+  // host: host,
+  // referer: referer,
+  // url: scrape_url,
+  // dates: dates,
+  // },
+  // };
+
+  // callback(response_data);
+  // return null;
+  // }
+
+  // const response_data = {
+  // status_code: CRASH,
+  // message: CRASH_MSG,
+  // };
+
+  // callback(response_data);
+  // }
+
+  // async get_anime_info(slug, callback) {
+  // const scrape_url = `${nine_anime_host}/watch/${slug}`;
+  // const request_option = {
+  // method: "GET",
+  // url: scrape_url,
+  // };
+  // const response = await axios(request_option).catch((error) => {
+  // callback({ error: error, status_code: error.status_code });
+  // return null;
+  // });
+  // const status_code = response.status;
+
+  // if (status_code == SUCESSFUL) {
+  // const html = response.data;
+  // const $ = cheerio.load(html);
+  // const anime_detail_wrapper = $(".anime-detail");
+  // const title = anime_detail_wrapper.find(".film-name").text();
+  // const image_url = anime_detail_wrapper.find(".film-poster-img").attr("src");
+  // const description = anime_detail_wrapper.find(".film-description").children(".shorting").text();
+  // const alternative_names = anime_detail_wrapper.find(".alias").text().split(",");
+  // const meta_details_items = anime_detail_wrapper.find(".meta").find(".item");
+  // let meta_items = {};
+  // meta_details_items.each(async function (i, ele) {
+  // const this_ele = $(this);
+  // const type = this_ele.children(".item-title").text().replace(":", "").replace(" ", "_").toLowerCase();
+  // const type_content =
+  // type != "genre"
+  // ? this_ele.children(".item-content").children("*").text()
+  // : this_ele
+  // .children(".item-content")
+  // .children("*")
+  // .text()
+  // .replace(" ", "")
+  // .replace(/([A-Z])/g, " $1")
+  // .trim();
+
+  // meta_items[type] = type_content;
+  // });
+  // const temp = slug.split("-");
+  // const anime_id = temp[temp.length - 1];
+  // const episodes_url = `${nine_anime_host}/ajax/episode/list/${anime_id}`;
+  // const episode_request_option = {
+  // method: "GET",
+  // url: episodes_url,
+  // };
+  // const episode_response = await axios(episode_request_option).catch((error) => {
+  // callback({ error: error, status_code: error.status_code });
+  // return null;
+  // });
+  // const $$ = cheerio.load(episode_response.data.html);
+  // let episodes = [];
+  // $$(".episodes-ul>.ep-item").each(async function (i, ele) {
+  // const this_ele = $(this);
+  // const episode_id = JSON.stringify(this_ele.data("id"));
+  // const episode_slug = this_ele.attr("href");
+  // const episode_title = this_ele.attr("title");
+  // const episode_number = JSON.stringify(this_ele.data("number"));
+
+  // episodes.push({
+  // episode_id,
+  // episode_slug,
+  // episode_title,
+  // episode_number,
+  // });
+  // });
+  // const referer = new URL(scrape_url);
+  // const host = referer.hostname;
+
+  // const response_data = {
+  // status_code: status_code,
+  // message: "successful",
+  // data: {
+  // host: host,
+  // referer: referer,
+  // url: scrape_url,
+  // title: title,
+  // image_url: image_url,
+  // description: description,
+  // alternative_names: alternative_names,
+  // meta_items: meta_items,
+  // slug: slug,
+  // anime_id: anime_id,
+  // episodes: episodes,
+  // },
+  // };
+
+  // callback(response_data);
+  // return null;
+  // }
+
+  // const response_data = {
+  // status_code: CRASH,
+  // message: CRASH_MSG,
+  // };
+
+  // callback(response_data);
+  // }
+}
+
 export async function get_anime_episode_servers(episode_id, callback) {
   const scrape_url = `${zoro_host}/ajax/v2/episode/servers?episodeId=${episode_id}`;
   const request_option = {

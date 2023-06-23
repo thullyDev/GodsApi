@@ -2,9 +2,12 @@ import express from "express";
 import morgan from "morgan";
 import axios from "axios";
 import cheerio from "cheerio";
+import favicon from "serve-favicon";
+import path from 'path';
 import {
   ManganatoParser,
   NineAnimeParser,
+  ZoroAnimeParser,
   get_episode_sources,
   get_anime_episode_servers,
 } from "./resources/parser.js";
@@ -19,10 +22,16 @@ import {
   safify,
 } from "./resources/utilities.js";
 
+// https://9animetv.to/ajax/search/suggest?keyword=attack%20on%20titan
+
 const app = express();
 const mnt_parser = new ManganatoParser();
 const nine_anime_parser = new NineAnimeParser();
+const zoro_anime_parser = new ZoroAnimeParser();
+const __dirname = path.resolve();
 
+
+app.use(favicon(__dirname + "/images/icon.jpg"));
 app.use(express.json());
 app.use(morgan("tiny"));
 
@@ -242,11 +251,239 @@ app.get("/anime/:site/recent/", async function (req, res) {
     });
   }
 
-  // if ( site === 2) {
-  // await zoro_anime_parser.get_recent(site, (results) => {
+  if (site == 2) {
+    await zoro_anime_parser.get_recent_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/sub/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_sub_animes((results) => {
   // data = results;
   // });
   // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_sub_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/dub/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_dub_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_dub_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/popular/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_dub_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_popular_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/top_airing/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_dub_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_top_airing_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/new/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_new_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_new_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/upcoming/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_dub_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_upcoming_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/complete/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_dub_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_complateed_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/movies/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_movies_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_movies_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/tv/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_tv_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_tv_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/ova/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_ova_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_ova_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/ona/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_ona_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_ona_animes((results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/special/", async function (req, res) {
+  const site = req.params.site;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_special_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_special_animes((results) => {
+      data = results;
+    });
+  }
 
   res.status(data.status_code).json(data);
 });
