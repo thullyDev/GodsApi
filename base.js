@@ -31,16 +31,17 @@ const mnt_parser = new ManganatoParser();
 const nine_anime_parser = new NineAnimeParser();
 const zoro_anime_parser = new ZoroAnimeParser();
 const __dirname = path.resolve();
-// const cors_options ={
-// origin:'*',
-// credentials:true,            //access-control-allow-credentials:true
-// optionSuccessStatus:200,
-// }
 
-// app.use(cors(cors_options))
 app.use(favicon(__dirname + "/images/icon.jpg"));
 app.use(express.json());
 app.use(morgan("tiny"));
+app.use((_req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', '*');
+
+  next();
+});
+
 
 app.listen(PORT, function () {
   print("GodsScraper-v1.0.0 ===> http://localhost:" + PORT);
