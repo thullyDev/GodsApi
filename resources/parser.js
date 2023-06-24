@@ -2184,92 +2184,92 @@ export class ZoroAnimeParser {
     callback(response_data);
   }
 
-  async get_recent_animes(callback) {
-    const scrape_url = `${zoro_host}/recently-updated`;
+  async get_recent_animes(page, callback) {
+    const scrape_url = `${zoro_host}/recently-updated?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_sub_animes(callback) {
-    const scrape_url = `${zoro_host}/subbed-anime`;
+  async get_sub_animes(page, callback) {
+    const scrape_url = `${zoro_host}/subbed-anime?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_dub_animes(callback) {
-    const scrape_url = `${zoro_host}/dubbed-anime`;
+  async get_dub_animes(page, callback) {
+    const scrape_url = `${zoro_host}/dubbed-anime?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_popular_animes(callback) {
-    const scrape_url = `${zoro_host}/most-popular`;
+  async get_popular_animes(page, callback) {
+    const scrape_url = `${zoro_host}/most-popular?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_top_airing_animes(callback) {
-    const scrape_url = `${zoro_host}/top-airing`;
+  async get_top_airing_animes(page, callback) {
+    const scrape_url = `${zoro_host}/top-airing?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
   async get_new_animes(callback) {
-    const scrape_url = `${zoro_host}/recently-added`;
+    const scrape_url = `${zoro_host}/recently-added?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_upcoming_animes(callback) {
-    const scrape_url = `${zoro_host}/top-upcoming`;
+  async get_upcoming_animes(page, callback) {
+    const scrape_url = `${zoro_host}/top-upcoming?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_complateed_animes(callback) {
-    const scrape_url = `${zoro_host}/completed`;
+  async get_complateed_animes(page, callback) {
+    const scrape_url = `${zoro_host}/completed?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_movies_animes(callback) {
-    const scrape_url = `${zoro_host}/movie`;
+  async get_movies_animes(page, callback) {
+    const scrape_url = `${zoro_host}/movie?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_tv_animes(callback) {
-    const scrape_url = `${zoro_host}/tv`;
+  async get_tv_animes(page, callback) {
+    const scrape_url = `${zoro_host}/tv?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_ova_animes(callback) {
-    const scrape_url = `${zoro_host}/ova`;
+  async get_ova_animes(page, callback) {
+    const scrape_url = `${zoro_host}/ova?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_ona_animes(callback) {
-    const scrape_url = `${zoro_host}/ona`;
+  async get_ona_animes(page, callback) {
+    const scrape_url = `${zoro_host}/ona?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
 
-  async get_special_animes(callback) {
-    const scrape_url = `${zoro_host}/special`;
+  async get_special_animes(page, callback) {
+    const scrape_url = `${zoro_host}/special?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);

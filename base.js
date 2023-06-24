@@ -242,6 +242,7 @@ app.get("/anime/:site/top_animes/", async function (req, res) {
 
 app.get("/anime/:site/recent/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   if (site == 1) {
@@ -251,7 +252,7 @@ app.get("/anime/:site/recent/", async function (req, res) {
   }
 
   if (site == 2) {
-    await zoro_anime_parser.get_recent_animes((results) => {
+    await zoro_anime_parser.get_recent_animes(page, (results) => {
       data = results;
     });
   }
@@ -261,6 +262,7 @@ app.get("/anime/:site/recent/", async function (req, res) {
 
 app.get("/anime/:site/sub/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -270,7 +272,7 @@ app.get("/anime/:site/sub/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_sub_animes((results) => {
+    await zoro_anime_parser.get_sub_animes(page, (results) => {
       data = results;
     });
   }
@@ -280,6 +282,7 @@ app.get("/anime/:site/sub/", async function (req, res) {
 
 app.get("/anime/:site/dub/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -289,7 +292,7 @@ app.get("/anime/:site/dub/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_dub_animes((results) => {
+    await zoro_anime_parser.get_dub_animes(page, (results) => {
       data = results;
     });
   }
@@ -299,6 +302,7 @@ app.get("/anime/:site/dub/", async function (req, res) {
 
 app.get("/anime/:site/popular/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -308,7 +312,7 @@ app.get("/anime/:site/popular/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_popular_animes((results) => {
+    await zoro_anime_parser.get_popular_animes(page, (results) => {
       data = results;
     });
   }
@@ -318,6 +322,7 @@ app.get("/anime/:site/popular/", async function (req, res) {
 
 app.get("/anime/:site/top_airing/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -327,7 +332,7 @@ app.get("/anime/:site/top_airing/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_top_airing_animes((results) => {
+    await zoro_anime_parser.get_top_airing_animes(page, (results) => {
       data = results;
     });
   }
@@ -337,6 +342,7 @@ app.get("/anime/:site/top_airing/", async function (req, res) {
 
 app.get("/anime/:site/new/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -346,7 +352,7 @@ app.get("/anime/:site/new/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_new_animes((results) => {
+    await zoro_anime_parser.get_new_animes(page, (results) => {
       data = results;
     });
   }
@@ -356,6 +362,7 @@ app.get("/anime/:site/new/", async function (req, res) {
 
 app.get("/anime/:site/upcoming/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -365,7 +372,7 @@ app.get("/anime/:site/upcoming/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_upcoming_animes((results) => {
+    await zoro_anime_parser.get_upcoming_animes(page, (results) => {
       data = results;
     });
   }
@@ -375,6 +382,7 @@ app.get("/anime/:site/upcoming/", async function (req, res) {
 
 app.get("/anime/:site/complete/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -384,7 +392,7 @@ app.get("/anime/:site/complete/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_complateed_animes((results) => {
+    await zoro_anime_parser.get_complateed_animes(page, (results) => {
       data = results;
     });
   }
@@ -394,6 +402,7 @@ app.get("/anime/:site/complete/", async function (req, res) {
 
 app.get("/anime/:site/movies/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -403,7 +412,7 @@ app.get("/anime/:site/movies/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_movies_animes((results) => {
+    await zoro_anime_parser.get_movies_animes(page, (results) => {
       data = results;
     });
   }
@@ -413,6 +422,7 @@ app.get("/anime/:site/movies/", async function (req, res) {
 
 app.get("/anime/:site/tv/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -422,7 +432,7 @@ app.get("/anime/:site/tv/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_tv_animes((results) => {
+    await zoro_anime_parser.get_tv_animes(page, (results) => {
       data = results;
     });
   }
@@ -432,6 +442,7 @@ app.get("/anime/:site/tv/", async function (req, res) {
 
 app.get("/anime/:site/ova/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -441,7 +452,7 @@ app.get("/anime/:site/ova/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_ova_animes((results) => {
+    await zoro_anime_parser.get_ova_animes(page, (results) => {
       data = results;
     });
   }
@@ -451,6 +462,7 @@ app.get("/anime/:site/ova/", async function (req, res) {
 
 app.get("/anime/:site/ona/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -460,7 +472,7 @@ app.get("/anime/:site/ona/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_ona_animes((results) => {
+    await zoro_anime_parser.get_ona_animes(page, (results) => {
       data = results;
     });
   }
@@ -470,6 +482,7 @@ app.get("/anime/:site/ona/", async function (req, res) {
 
 app.get("/anime/:site/special/", async function (req, res) {
   const site = req.params.site;
+  const page = safify(req.query.page);
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
@@ -479,7 +492,7 @@ app.get("/anime/:site/special/", async function (req, res) {
   // }
 
   if (site == 2) {
-    await zoro_anime_parser.get_special_animes((results) => {
+    await zoro_anime_parser.get_special_animes(page, (results) => {
       data = results;
     });
   }
