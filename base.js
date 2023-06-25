@@ -36,12 +36,11 @@ app.use(favicon(__dirname + "/images/icon.jpg"));
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use((_req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', '*');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
 
   next();
 });
-
 
 app.listen(PORT, function () {
   print("GodsScraper-v1.0.0 ===> http://localhost:" + PORT);

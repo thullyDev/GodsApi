@@ -2219,7 +2219,7 @@ export class ZoroAnimeParser {
     callback(response_data);
   }
 
-  async get_new_animes(callback) {
+  async get_new_animes(page, callback) {
     const scrape_url = `${zoro_host}/recently-added?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
