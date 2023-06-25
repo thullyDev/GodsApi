@@ -2204,25 +2204,27 @@ export class ZoroAnimeParser {
       const host = referer.hostname;
       let results = [];
       $(".nav-item").each(async function (i, ele) {
-		  const this_ele = $(this)
-		  const image_ele = this_ele.find(".film-poster-img")
-		  const title = image_ele.attr("alt")
-		  const image_url = image_ele.data("src")
-		  const alias = this_ele.find(".alias-name").text()
-		  const info = this_ele.find(".film-infor").text()
-		  const realise_date = this_ele.find(".film-infor>span:first-child").text()
-		  const duration = this_ele.find(".film-infor>span:last-child").text()
-		  const type = info.trim().replace(realise_date, "").replace(duration, "")
-		  
-		  results.push({
-			  title,
-			  image_url,
-			  alias,
-			  realise_date,
-			  duration,
-			  type,
-		  })
-	  });
+        const this_ele = $(this);
+        const image_ele = this_ele.find(".film-poster-img");
+        const slug = this_ele.attr("href").split("?")[0].split("/")[1];
+        const title = image_ele.attr("alt");
+        const image_url = image_ele.data("src");
+        const alias = this_ele.find(".alias-name").text();
+        const info = this_ele.find(".film-infor").text();
+        const realise_date = this_ele.find(".film-infor>span:first-child").text();
+        const duration = this_ele.find(".film-infor>span:last-child").text();
+        const type = info.trim().replace(realise_date, "").replace(duration, "");
+
+        results.push({
+          slug,
+          title,
+          image_url,
+          alias,
+          realise_date,
+          duration,
+          type,
+        });
+      });
 
       const response_data = {
         status_code: status_code,

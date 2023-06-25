@@ -212,7 +212,7 @@ app.get("/anime/:site/filter/", async function (req, res) {
 
 app.get("/anime/:site/results/", async function (req, res) {
   const site = req.params.site;
-  let keyword = safify(req.query.keyword) != "" ? encodeURI(safify(req.query.keyword)) : ""
+  let keyword = safify(req.query.keyword) != "" ? encodeURI(safify(req.query.keyword)) : "";
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   // if (site == 1) {
