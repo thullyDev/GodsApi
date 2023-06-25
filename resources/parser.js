@@ -2184,6 +2184,69 @@ export class ZoroAnimeParser {
     callback(response_data);
   }
 
+  async get_anime_results(keyword, callback) {
+    const scrape_url = `${zoro_host}/ajax/search/suggest?keyword=${keyword}`;
+    const request_option = {
+      method: "GET",
+      url: scrape_url,
+    };
+
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data.html;
+      const $ = cheerio.load(html);
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+      let results = [];
+      $(".nav-item").each(async function (i, ele) {
+		  const this_ele = $(this)
+		  const image_ele = this_ele.find(".film-poster-img")
+		  const title = image_ele.attr("alt")
+		  const image_url = image_ele.data("src")
+		  const alias = this_ele.find(".alias-name").text()
+		  const info = this_ele.find(".film-infor").text()
+		  const realise_date = this_ele.find(".film-infor>span:first-child").text()
+		  const duration = this_ele.find(".film-infor>span:last-child").text()
+		  const type = info.trim().replace(realise_date, "").replace(duration, "")
+		  
+		  results.push({
+			  title,
+			  image_url,
+			  alias,
+			  realise_date,
+			  duration,
+			  type,
+		  })
+	  });
+
+      const response_data = {
+        status_code: status_code,
+        message: "successful",
+        data: {
+          host: host,
+          referer: referer,
+          url: scrape_url,
+          results: results,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }
+
   async get_recent_animes(page, callback) {
     const scrape_url = `${zoro_host}/recently-updated?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);

@@ -43,7 +43,7 @@ app.use((_req, res, next) => {
 });
 
 app.listen(PORT, function () {
-  print("GodsScraper-v1.0.0 ===> http://localhost:" + PORT);
+  print("GodsApi-v1.0.0 ===> http://localhost:" + PORT);
 });
 
 app.get("/", function (req, res) {
@@ -171,7 +171,7 @@ app.get("/anime/:site/az-list/:letter/", async function (req, res) {
   res.status(data.status_code).json(data);
 });
 
-app.get("/anime/:site/search/", async function (req, res) {
+app.get("/anime/:site/filter/", async function (req, res) {
   const site = req.params.site;
   const keyword = req.query.keyword;
   const type = req.query.type;
@@ -206,6 +206,27 @@ app.get("/anime/:site/search/", async function (req, res) {
   // data = results;
   // });
   // }
+
+  res.status(data.status_code).json(data);
+});
+
+app.get("/anime/:site/results/", async function (req, res) {
+  const site = req.params.site;
+  let keyword = safify(req.query.keyword) != "" ? encodeURI(safify(req.query.keyword)) : ""
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_search_animes(keyword, (results) => {
+  // data = results;
+  // }
+  // );
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_anime_results(keyword, (results) => {
+      data = results;
+    });
+  }
 
   res.status(data.status_code).json(data);
 });
