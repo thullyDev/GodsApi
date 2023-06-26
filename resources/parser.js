@@ -2215,6 +2215,8 @@ export class ZoroAnimeParser {
         const duration = this_ele.find(".film-infor>span:last-child").text();
         const type = info.trim().replace(realise_date, "").replace(duration, "");
 
+        if (slug == "search") return null;
+
         results.push({
           slug,
           title,
