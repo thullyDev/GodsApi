@@ -2216,6 +2216,7 @@ export class ZoroAnimeParser {
         const type = info.trim().replace(realise_date, "").replace(duration, "");
 
         if (slug == "search" && slug == "") return null;
+        if (alias == "" && realise_date == "" && duration == "" && type == "") return null;
 
         results.push({
           slug,
