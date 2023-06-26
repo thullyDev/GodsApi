@@ -1968,6 +1968,22 @@ export class NineAnimeParser {
 
         meta_items[type] = type_content;
       });
+      let related_animes = [];
+      $("div#main-sidebar .anime-block-ul>.ulclear>li").each(async function (i, ele) {
+        const this_ele = $(this);
+        const image_ele = this_ele.find(".film-poster-img");
+        const image_url = image_ele.data("src");
+        const title = image_ele.attr("alt");
+        const year = this_ele.find(".fdi-item:first-child").text().trim();
+        const eps = this_ele.find(".fdi-item.fdi-duration").text().trim();
+
+        related_animes.push({
+          title,
+          image_url,
+          year,
+          eps,
+        });
+      });
       const temp = slug.split("-");
       const anime_id = temp[temp.length - 1];
       const episodes_url = `${nine_anime_host}/ajax/episode/list/${anime_id}`;
@@ -2013,6 +2029,7 @@ export class NineAnimeParser {
           slug: slug,
           anime_id: anime_id,
           episodes: episodes,
+          related_animes: related_animes,
         },
       };
 
