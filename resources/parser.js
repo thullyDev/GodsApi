@@ -1972,12 +1972,14 @@ export class NineAnimeParser {
       $("div#main-sidebar .anime-block-ul>.ulclear>li").each(async function (i, ele) {
         const this_ele = $(this);
         const image_ele = this_ele.find(".film-poster-img");
+        const slug = this_ele.find(".dynamic-name").attr("href").split("/")[2];
         const image_url = image_ele.data("src");
         const title = image_ele.attr("alt");
         const year = this_ele.find(".fdi-item:first-child").text().trim();
         const eps = this_ele.find(".fdi-item.fdi-duration").text().trim();
 
         related_animes.push({
+          slug,
           title,
           image_url,
           year,
