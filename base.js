@@ -529,6 +529,27 @@ app.get("/anime/:site/special/", async function (req, res) {
   res.status(data.status_code).json(data);
 });
 
+app.get("/anime/:site/genre/:genre", async function (req, res) {
+  const site = req.params.site;
+  const genre = req.params.genre;
+  const page = safify(req.query.page);
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  // if (site == 1) {
+  // await nine_anime_parser.get_special_animes((results) => {
+  // data = results;
+  // });
+  // }
+
+  if (site == 2) {
+    await zoro_anime_parser.get_genre_animes(genre, page, (results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
 app.get("/anime/:site/watch_types/", async function (req, res) {
   const site = req.params.site;
   const cache = req.query.cache;

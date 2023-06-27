@@ -2055,8 +2055,7 @@ export class ZoroAnimeParser {
       url: scrape_url,
     };
     const response = await axios(request_option).catch((error) => {
-      callback({ error: error, status_code: error.status_code });
-      return null;
+      return { status_code: error.status_code }
     });
     const status_code = response.status;
 
@@ -2065,6 +2064,18 @@ export class ZoroAnimeParser {
       const $ = cheerio.load(html);
       const referer = new URL(scrape_url);
       const host = referer.hostname;
+      const title = $("head > title").text();
+
+      if (title.search("404 ") != -1) {
+        const response_data = {
+          status_code: NOT_FOUND,
+          message: NOT_FOUND_MSG,
+        };
+
+        callback(response_data);
+        return null;
+      }
+
       const page = $(".page-item.active>.page-link").text();
       const pages = $(".page-item:last-child>.page-link").attr("href").split("?page=")[1];
 
@@ -2357,6 +2368,13 @@ export class ZoroAnimeParser {
 
   async get_special_animes(page, callback) {
     const scrape_url = `${zoro_host}/special?page=${page}`;
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
+  async get_genre_animes(genre, page, callback) {
+    const scrape_url = `${zoro_host}/genre/${genre}?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
