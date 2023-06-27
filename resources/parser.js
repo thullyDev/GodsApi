@@ -1951,6 +1951,13 @@ export class NineAnimeParser {
       const description = anime_detail_wrapper.find(".film-description").children(".shorting").text().trim();
       const alternative_names = anime_detail_wrapper.find(".alias").text().split(",");
       const meta_details_items = anime_detail_wrapper.find(".meta").find(".item");
+      let genres = [];
+      $("div.meta>div.col1>.item:last-child>.item-content>a").each(async function (i, ele) {
+        const this_ele = $(this);
+        const genre = this_ele.attr("href").split("/")[2];
+
+        genres.push(genre);
+      });
       let meta_items = {};
       meta_details_items.each(async function (i, ele) {
         const this_ele = $(this);
@@ -2027,6 +2034,7 @@ export class NineAnimeParser {
           image_url: image_url,
           description: description,
           alternative_names: alternative_names,
+          genres: genres,
           meta_items: meta_items,
           slug: slug,
           anime_id: anime_id,
@@ -2055,7 +2063,7 @@ export class ZoroAnimeParser {
       url: scrape_url,
     };
     const response = await axios(request_option).catch((error) => {
-      return { status_code: error.status_code }
+      return { status_code: error.status_code };
     });
     const status_code = response.status;
 
