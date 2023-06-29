@@ -2884,6 +2884,7 @@ export class ZoroAnimeParser {
 
 export async function get_anime_episode_servers(episode_id, callback) {
   const scrape_url = `${zoro_host}/ajax/v2/episode/servers?episodeId=${episode_id}`;
+  print(scrape_url)
   const request_option = {
     method: "GET",
     url: scrape_url,
