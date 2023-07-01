@@ -616,7 +616,7 @@ app.get("/anime/:site/schedule/animes/", async function (req, res) {
   res.status(data.status_code).json(data);
 });
 
-app.get("/anime/details/:site/:slug/", async function (req, res) {
+app.get("/anime/:site/details/:slug/", async function (req, res) {
   const slug = req.params.slug;
   const site = req.params.site;
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
@@ -639,7 +639,7 @@ app.get("/anime/details/:site/:slug/", async function (req, res) {
 app.get("/anime/servers/:episode_id/", async function (req, res) {
   const episode_id = req.params.episode_id;
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
-  print("I am here")
+  print("I am here");
 
   await get_anime_episode_servers(episode_id, (results) => {
     data = results;

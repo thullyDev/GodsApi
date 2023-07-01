@@ -1,6 +1,6 @@
 const PORT = 3000;
 const SERVER_MSG =
-  "Welcome to GodsScraper-v1 Credit to https://github.com/thullyDev for this manga/hentai/anime Api Scraper";
+  "Welcome to GodsApi-v1.0.0 Credit to https://github.com/thullyDev for this manga/hentai/anime/porn/novel/comics/movies/music Api Scraper";
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36";
 const SUCESSFUL = 200;
