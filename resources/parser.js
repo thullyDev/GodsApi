@@ -2011,7 +2011,7 @@ export class NineAnimeParser {
         const this_ele = $(this);
         const episode_id = JSON.stringify(this_ele.data("id"));
         const episode_slug = this_ele.attr("href");
-        const episode_title = this_ele.attr("title").replaceAll('"', '\\"').replaceAll("'", "\\'");
+        const episode_title = this_ele.attr("title").replace('"', '\\"').replace("'", "\\'");
         const episode_number = JSON.stringify(this_ele.data("number"));
 
         episodes.push({
