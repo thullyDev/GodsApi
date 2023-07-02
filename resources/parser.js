@@ -2005,13 +2005,13 @@ export class NineAnimeParser {
         return null;
       });
       const $$ = cheerio.load(episode_response.data.html);
-	  
+
       let episodes = [];
       $$(".episodes-ul>.ep-item").each(async function (i, ele) {
         const this_ele = $(this);
         const episode_id = JSON.stringify(this_ele.data("id"));
         const episode_slug = this_ele.attr("href");
-        const episode_title = this_ele.attr("title").replace('"', '\\"').replace("'", "\\'");
+        const episode_title = JSON.stringify(this_ele.attr("title"));
         const episode_number = JSON.stringify(this_ele.data("number"));
 
         episodes.push({
