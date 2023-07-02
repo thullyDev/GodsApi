@@ -639,7 +639,6 @@ app.get("/anime/:site/details/:slug/", async function (req, res) {
 app.get("/anime/servers/:episode_id/", async function (req, res) {
   const episode_id = req.params.episode_id;
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
-  print("I am here");
 
   await get_anime_episode_servers(episode_id, (results) => {
     data = results;
