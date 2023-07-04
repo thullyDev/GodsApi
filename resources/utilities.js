@@ -29,7 +29,7 @@ const nhentai_host = "https://nhentai.net";
 const imhentai_host = "https://imhentai.xxx";
 const kisscartoon_host = "https://www1.kisscartoon.online";
 const nine_anime_host = "https://9animetv.to";
-const zoro_host = "https://zoro.to";
+const zoro_host = "https://aniwatch.to"; //? old zoro base=> "https://zoro.to";
 const print = (msg) => console.log(msg);
 const safify = (val) => {
   if (!val) return "";

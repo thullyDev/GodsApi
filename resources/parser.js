@@ -2944,7 +2944,7 @@ export async function get_anime_episode_servers(episode_id, callback) {
   callback(response_data);
 }
 
-export async function get_episode_sources(server_id, callback) {
+export async function get_episode_sources(site, server_id, callback) {
   const url = `${zoro_host}/ajax/v2/episode/sources?id=${server_id}`;
   const request_option = {
     method: "GET",
@@ -2957,21 +2957,25 @@ export async function get_episode_sources(server_id, callback) {
   const status_code = response.status;
 
   if (status_code == SUCESSFUL) {
-    const rapid_link = response.data.link;
-    const temp = rapid_link.split("?")[0].split("/");
-    const rapid_id = temp[temp.length - 1];
-    const rapid_sources_link = "https://rapid-cloud.co/ajax/embed-6/getSources?id=" + rapid_id;
-    const rapid_request_option = {
+    const link = response.data.link;
+    const temp = link.split("?")[0].split("/");
+    const link_id = temp[temp.length - 1];
+    const sources_link =
+      site == "rapid"
+        ? "https://rapid-cloud.co/ajax/embed-6/getSources?id=" + link_id
+        : "https://megacloud.tv/embed-2/ajax/e-1/getSources?id=" + link_id;
+
+    const source_request_option = {
       method: "GET",
-      url: rapid_sources_link,
+      url: sources_link,
     };
-    const rapid_response = await axios(rapid_request_option).catch((error) => {
+    const source_response = await axios(source_request_option).catch((error) => {
       callback({ error: error, status_code: error.status_code });
       return null;
     });
 
-    if (rapid_response.data.encrypted == false) {
-      const source_data = rapid_response.data;
+    if (source_response.data.encrypted == false) {
+      const source_data = source_response.data;
       delete source_data.encrypted;
       const referer = new URL(url);
       const host = referer.hostname;
@@ -2997,8 +3001,8 @@ export async function get_episode_sources(server_id, callback) {
       return null;
     });
 
-    const encrypted_source = rapid_response.data.sources;
-    const encrypted_bk_source = rapid_response.data.sourcesBackup;
+    const encrypted_source = source_response.data.sources;
+    const encrypted_bk_source = source_response.data.sourcesBackup;
     const decrypt_key = decrypt_response.data;
     let raw_sources = {};
     let sources = "";
@@ -3015,7 +3019,7 @@ export async function get_episode_sources(server_id, callback) {
       return null;
     }
 
-    const source_data = rapid_response.data;
+    const source_data = source_response.data;
     source_data.sources = sources;
     source_data.sourcesBackup = bk_sources;
 
