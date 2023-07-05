@@ -3020,8 +3020,8 @@ export async function get_episode_sources(proxy, site, server_id, callback) {
     }
 
     const source_data = source_response.data;
-
-    if (proxy == true) {
+	
+    if (proxy == "true") {
       let temp_source = [];
       for (let i = 0; i < sources.length; i++) {
         const item = sources[i];

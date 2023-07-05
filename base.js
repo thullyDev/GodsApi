@@ -4,8 +4,6 @@ import axios from "axios";
 import cheerio from "cheerio";
 import favicon from "serve-favicon";
 import path from "path";
-// import cors "cors"
-
 import {
   ManganatoParser,
   NineAnimeParser,
@@ -23,8 +21,6 @@ import {
   print,
   safify,
 } from "./resources/utilities.js";
-
-// https://9animetv.to/ajax/search/suggest?keyword=attack%20on%20titan
 
 const app = express();
 const mnt_parser = new ManganatoParser();
