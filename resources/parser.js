@@ -2944,7 +2944,7 @@ export async function get_anime_episode_servers(episode_id, callback) {
   callback(response_data);
 }
 
-export async function get_episode_sources(site, server_id, callback) {
+export async function get_episode_sources(proxy, site, server_id, callback) {
   const url = `${zoro_host}/ajax/v2/episode/sources?id=${server_id}`;
   const request_option = {
     method: "GET",
@@ -3020,8 +3020,35 @@ export async function get_episode_sources(site, server_id, callback) {
     }
 
     const source_data = source_response.data;
-    source_data.sources = sources;
-    source_data.sourcesBackup = bk_sources;
+
+    if (proxy == true) {
+      let temp_source = [];
+      for (let i = 0; i < sources.length; i++) {
+        const item = sources[i];
+
+        temp_source.push({
+          file: "https://cors-thullydev.onrender.com/" + item.file,
+          type: item.type,
+        });
+      }
+
+      source_data.sources = temp_source;
+
+      temp_source = [];
+      for (let i = 0; i < bk_sources.length; i++) {
+        const item = bk_sources[i];
+
+        temp_source.push({
+          file: "https://cors-thullydev.onrender.com/" + item.file,
+          type: item.type,
+        });
+      }
+
+      source_data.sourcesBackup = temp_source;
+    } else {
+      source_data.sources = sources;
+      source_data.sourcesBackup = bk_sources;
+    }
 
     delete source_data.encrypted;
 

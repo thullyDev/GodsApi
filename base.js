@@ -656,8 +656,9 @@ app.get("/anime/servers/:episode_id/", async function (req, res) {
 app.get("/anime/:site/sources/:server_id/", async function (req, res) {
   const server_id = req.params.server_id;
   const site = req.params.site;
+  const proxy = req.query.proxy;
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
-  await get_episode_sources(site, server_id, (results) => {
+  await get_episode_sources(proxy, site, server_id, (results) => {
     data = results;
   });
 
