@@ -31,23 +31,7 @@ const kisscartoon_host = "https://www1.kisscartoon.online";
 const nine_anime_host = "https://9animetv.to";
 const kaido_host = "https://kaido.to";
 const zoro_host = "https://aniwatch.to"; //? old zoro base=> "https://zoro.to";
-const print = (show) => {
-  if (typeof show == "Object") {
-    for (const [key, value] of Object.entries(show)) {
-      console.log(`${key}: ${value}`);
-    }
-    return null;
-  }
-
-  if (typeof show == "Array") {
-    for (const i = 0; i < show.length; i++) {
-      console.log(show[i]);
-    }
-    return null;
-  }
-
-  console.log(show);
-};
+const print = (show) => console.log(show);
 const safify = (val) => {
   if (!val) return "";
   else return val;

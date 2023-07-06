@@ -3778,8 +3778,8 @@ export async function get_anime_episode_servers(site, episode_id, callback) {
   callback(response_data);
 }
 
-export async function get_episode_sources(proxy, site, server_id, callback) {
-  const url = `${zoro_host}/ajax/v2/episode/sources?id=${server_id}`;
+export async function get_episode_sources(proxy, host, site, server_id, callback) {
+  const url = host == 2 ? `${zoro_host}/ajax/v2/episode/sources?id=${server_id}` : `${kaido_host}/ajax/episode/sources?id=${server_id}`
   print(url);
   const request_option = {
     method: "GET",
