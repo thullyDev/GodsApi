@@ -8,6 +8,7 @@ import {
   ManganatoParser,
   NineAnimeParser,
   ZoroAnimeParser,
+  KaidoAnimeParser,
   get_episode_sources,
   get_anime_episode_servers,
 } from "./resources/parser.js";
@@ -26,6 +27,7 @@ const app = express();
 const mnt_parser = new ManganatoParser();
 const nine_anime_parser = new NineAnimeParser();
 const zoro_anime_parser = new ZoroAnimeParser();
+const kaido_anime_parser = new KaidoAnimeParser();
 const __dirname = path.resolve();
 
 app.use(favicon(__dirname + "/images/icon.jpg"));
@@ -282,6 +284,12 @@ app.get("/anime/:site/recent/", async function (req, res) {
     });
   }
 
+  if (site == 3) {
+    await kaido_anime_parser.get_recent_animes(page, (results) => {
+      data = results;
+    });
+  }
+
   res.status(data.status_code).json(data);
 });
 
@@ -298,6 +306,12 @@ app.get("/anime/:site/sub/", async function (req, res) {
 
   if (site == 2) {
     await zoro_anime_parser.get_sub_animes(page, (results) => {
+      data = results;
+    });
+  }
+
+  if (site == 3) {
+    await kaido_anime_parser.get_sub_animes(page, (results) => {
       data = results;
     });
   }
@@ -322,6 +336,12 @@ app.get("/anime/:site/dub/", async function (req, res) {
     });
   }
 
+  if (site == 3) {
+    await kaido_anime_parser.get_dub_animes(page, (results) => {
+      data = results;
+    });
+  }
+
   res.status(data.status_code).json(data);
 });
 
@@ -338,6 +358,12 @@ app.get("/anime/:site/popular/", async function (req, res) {
 
   if (site == 2) {
     await zoro_anime_parser.get_popular_animes(page, (results) => {
+      data = results;
+    });
+  }
+
+  if (site == 3) {
+    await kaido_anime_parser.get_popular_animes(page, (results) => {
       data = results;
     });
   }
@@ -362,6 +388,12 @@ app.get("/anime/:site/top_airing/", async function (req, res) {
     });
   }
 
+  if (site == 3) {
+    await kaido_anime_parser.get_top_airing_animes(page, (results) => {
+      data = results;
+    });
+  }
+
   res.status(data.status_code).json(data);
 });
 
@@ -378,6 +410,12 @@ app.get("/anime/:site/new/", async function (req, res) {
 
   if (site == 2) {
     await zoro_anime_parser.get_new_animes(page, (results) => {
+      data = results;
+    });
+  }
+
+  if (site == 3) {
+    await kaido_anime_parser.get_new_animes(page, (results) => {
       data = results;
     });
   }
@@ -402,6 +440,12 @@ app.get("/anime/:site/upcoming/", async function (req, res) {
     });
   }
 
+  if (site == 3) {
+    await kaido_anime_parser.get_upcoming_animes(page, (results) => {
+      data = results;
+    });
+  }
+
   res.status(data.status_code).json(data);
 });
 
@@ -418,6 +462,12 @@ app.get("/anime/:site/complete/", async function (req, res) {
 
   if (site == 2) {
     await zoro_anime_parser.get_complateed_animes(page, (results) => {
+      data = results;
+    });
+  }
+
+  if (site == 3) {
+    await kaido_anime_parser.get_complateed_animes(page, (results) => {
       data = results;
     });
   }
@@ -442,6 +492,12 @@ app.get("/anime/:site/movies/", async function (req, res) {
     });
   }
 
+  if (site == 3) {
+    await kaido_anime_parser.get_movies_animes(page, (results) => {
+      data = results;
+    });
+  }
+
   res.status(data.status_code).json(data);
 });
 
@@ -458,6 +514,12 @@ app.get("/anime/:site/tv/", async function (req, res) {
 
   if (site == 2) {
     await zoro_anime_parser.get_tv_animes(page, (results) => {
+      data = results;
+    });
+  }
+
+  if (site == 3) {
+    await kaido_anime_parser.get_tv_animes(page, (results) => {
       data = results;
     });
   }
@@ -482,6 +544,12 @@ app.get("/anime/:site/ova/", async function (req, res) {
     });
   }
 
+  if (site == 3) {
+    await kaido_anime_parser.get_ova_animes(page, (results) => {
+      data = results;
+    });
+  }
+
   res.status(data.status_code).json(data);
 });
 
@@ -498,6 +566,12 @@ app.get("/anime/:site/ona/", async function (req, res) {
 
   if (site == 2) {
     await zoro_anime_parser.get_ona_animes(page, (results) => {
+      data = results;
+    });
+  }
+
+  if (site == 3) {
+    await kaido_anime_parser.get_ona_animes(page, (results) => {
       data = results;
     });
   }
@@ -522,6 +596,12 @@ app.get("/anime/:site/special/", async function (req, res) {
     });
   }
 
+  if (site == 3) {
+    await kaido_anime_parser.get_special_animes(page, (results) => {
+      data = results;
+    });
+  }
+
   res.status(data.status_code).json(data);
 });
 
@@ -539,6 +619,12 @@ app.get("/anime/:site/genre/:genre", async function (req, res) {
 
   if (site == 2) {
     await zoro_anime_parser.get_genre_animes(genre, page, (results) => {
+      data = results;
+    });
+  }
+
+  if (site == 3) {
+    await kaido_anime_parser.get_genre_animes(genre, page, (results) => {
       data = results;
     });
   }
@@ -632,11 +718,12 @@ app.get("/anime/:site/details/:slug/", async function (req, res) {
   res.status(data.status_code).json(data);
 });
 
-app.get("/anime/servers/:episode_id/", async function (req, res) {
+app.get("/anime/:site/servers/:episode_id/", async function (req, res) {
   const episode_id = req.params.episode_id;
+  const site = req.params.site;
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
-  await get_anime_episode_servers(episode_id, (results) => {
+  await get_anime_episode_servers(site, episode_id, (results) => {
     data = results;
   });
 
