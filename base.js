@@ -152,7 +152,6 @@ app.get("/manga/top_mangas/", async function (req, res) {
 //? kaido.to site = 2
 //? zoro.to site = 3
 
-
 app.get("/anime/:site/az-list/:letter/", async function (req, res) {
   const site = req.params.site;
   const letter = req.params.letter;
