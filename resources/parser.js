@@ -3715,10 +3715,11 @@ export class KaidoAnimeParser {
 }
 
 export async function get_anime_episode_servers(site, episode_id, callback) {
-  const scrape_url =
-    site == 2
-      ? `${zoro_host}/ajax/v2/episode/servers?episodeId=${episode_id}`
-      : `${kaido_host}/ajax/episode/servers?episodeId=${episode_id}`;
+  let scrape_url = `${nine_anime_host}/ajax/episode/servers?episodeId=${episode_id}`;
+
+  if (site == 2) scrape_url = `${zoro_host}/ajax/v2/episode/servers?episodeId=${episode_id}`;
+  if (site == 3) scrape_url = `${kaido_host}/ajax/episode/servers?episodeId=${episode_id}`;
+
   const request_option = {
     method: "GET",
     url: scrape_url,
