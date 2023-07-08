@@ -248,6 +248,12 @@ app.get("/anime/:site/sliders/", async function (req, res) {
       data = results;
     });
   }
+  
+  if (site == 3) {
+    await kaido_anime_parser.get_slider_animes((results) => {
+      data = results;
+    });
+  }
 
   res.status(data.status_code).json(data);
 });
