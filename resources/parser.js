@@ -2315,7 +2315,6 @@ export class ZoroAnimeParser {
 
   async get_popular_animes(page, callback) {
     const scrape_url = `${zoro_host}/most-popular?page=${page}`;
-    print(scrape_url);
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
@@ -3778,11 +3777,10 @@ export async function get_anime_episode_servers(site, episode_id, callback) {
   callback(response_data);
 }
 
-export async function get_episode_sources(proxy, ref_host, site, server_id, callback) {
-  const url =
-    ref_host == "2"
-      ? `${zoro_host}/ajax/v2/episode/sources?id=${server_id}`
-      : `${kaido_host}/ajax/episode/sources?id=${server_id}`;
+export async function get_episode_sources(proxy, site, server_id, callback) {
+  let url = `${nine_anime_host}/ajax/episode/sources?id=${server_id}`;
+  if (site == "2") url = `${zoro_host}/ajax/v2/episode/sources?id=${server_id}`;
+  if (site == "3") url = `${kaido_host}/ajax/episode/sources?id=${server_id}`;
   const request_option = {
     method: "GET",
     url: url,
@@ -3796,11 +3794,12 @@ export async function get_episode_sources(proxy, ref_host, site, server_id, call
   if (status_code == SUCESSFUL) {
     const link = response.data.link;
     const temp = link.split("?")[0].split("/");
+    const source_host = temp[2];
     const link_id = temp[temp.length - 1];
-    const sources_link =
-      site == "rapid"
-        ? "https://rapid-cloud.co/ajax/embed-6/getSources?id=" + link_id
-        : "https://megacloud.tv/embed-2/ajax/e-1/getSources?id=" + link_id;
+    let sources_link = "";
+
+    if (source_host == "rapid-cloud.co") sources_link = "https://rapid-cloud.co/ajax/embed-6/getSources?id=" + link_id;
+    if (source_host == "megacloud.tv") sources_link = "https://megacloud.tv/embed-2/ajax/e-1/getSources?id=" + link_id;
 
     const source_request_option = {
       method: "GET",
@@ -3828,10 +3827,11 @@ export async function get_episode_sources(proxy, ref_host, site, server_id, call
       };
     }
 
-    const decrypt_key_link =
-      ref_host == "3"
-        ? "https://raw.githubusercontent.com/enimax-anime/key/e0/key.txt"
-        : "https://raw.githubusercontent.com/enimax-anime/key/e6/key.txt";
+    let decrypt_key_link = "";
+
+    if (site == "3" || site == "1") decrypt_key_link = "https://raw.githubusercontent.com/enimax-anime/key/e0/key.txt";
+    if (site == "2") decrypt_key_link = "https://raw.githubusercontent.com/enimax-anime/key/e6/key.txt";
+
     const decrypt_request_option = {
       method: "GET",
       url: decrypt_key_link,

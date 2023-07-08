@@ -248,7 +248,7 @@ app.get("/anime/:site/sliders/", async function (req, res) {
       data = results;
     });
   }
-  
+
   if (site == 3) {
     await kaido_anime_parser.get_slider_animes((results) => {
       data = results;
@@ -746,13 +746,13 @@ app.get("/anime/:site/servers/:episode_id/", async function (req, res) {
   res.status(data.status_code).json(data);
 });
 
-app.get("/anime/:host/:site/sources/:server_id/", async function (req, res) {
+app.get("/anime/:site/sources/:server_id/", async function (req, res) {
   const server_id = req.params.server_id;
-  const host = req.params.host;
   const site = req.params.site;
   const proxy = req.query.proxy;
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
-  await get_episode_sources(proxy, host, site, server_id, (results) => {
+
+  await get_episode_sources(proxy, site, server_id, (results) => {
     data = results;
   });
 
