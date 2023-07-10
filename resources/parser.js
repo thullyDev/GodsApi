@@ -2292,6 +2292,104 @@ export class ZoroAnimeParser {
     callback(response_data);
   }
 
+  async get_anime_info(slug, callback) {
+    const scrape_url = `${zoro_host}/${slug}`;
+    const request_option = {
+      method: "GET",
+      url: scrape_url,
+    };
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data;
+      const $ = cheerio.load(html);
+      const anime_detail_wrapper = $(".anime-detail");
+      const title = anime_detail_wrapper.find(".film-name").text();
+      const image_url = anime_detail_wrapper.find(".film-poster-img").attr("src");
+      const description = anime_detail_wrapper.find(".film-description").children(".shorting").text();
+      const alternative_names = anime_detail_wrapper.find(".alias").text().split(",");
+      const meta_details_items = anime_detail_wrapper.find(".meta").find(".item");
+      let meta_items = {};
+      meta_details_items.each(async function (i, ele) {
+        const this_ele = $(this);
+        const type = this_ele.children(".item-title").text().replace(":", "").replace(" ", "_").toLowerCase();
+        const type_content =
+          type != "genre"
+            ? this_ele.children(".item-content").children("*").text()
+            : this_ele
+                .children(".item-content")
+                .children("*")
+                .text()
+                .replace(" ", "")
+                .replace(/([A-Z])/g, " $1")
+                .trim();
+
+        meta_items[type] = type_content;
+      });
+      const temp = slug.split("-");
+      const anime_id = temp[temp.length - 1];
+      const episodes_url = `${zoro_host}/ajax/episode/list/${anime_id}`;
+      const episode_request_option = {
+        method: "GET",
+        url: episodes_url,
+      };
+      const episode_response = await axios(episode_request_option).catch((error) => {
+        callback({ error: error, status_code: error.status_code });
+        return null;
+      });
+      const $$ = cheerio.load(episode_response.data.html);
+      let episodes = [];
+      $$(".episodes-ul>.ep-item").each(async function (i, ele) {
+        const this_ele = $(this);
+        const episode_id = JSON.stringify(this_ele.data("id"));
+        const episode_slug = this_ele.attr("href");
+        const episode_title = this_ele.attr("title");
+        const episode_number = JSON.stringify(this_ele.data("number"));
+
+        episodes.push({
+          episode_id,
+          episode_slug,
+          episode_title,
+          episode_number,
+        });
+      });
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+
+      const response_data = {
+        status_code: status_code,
+        message: "successful",
+        data: {
+          host: host,
+          referer: referer,
+          url: scrape_url,
+          title: title,
+          image_url: image_url,
+          description: description,
+          alternative_names: alternative_names,
+          meta_items: meta_items,
+          slug: slug,
+          anime_id: anime_id,
+          episodes: episodes,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }
+
   async get_recent_animes(page, callback) {
     const scrape_url = `${zoro_host}/recently-updated?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
@@ -2785,104 +2883,6 @@ export class ZoroAnimeParser {
 
     callback(response_data);
   }
-
-  async get_anime_info(slug, callback) {
-    const scrape_url = `${nine_anime_host}/watch/${slug}`;
-    const request_option = {
-      method: "GET",
-      url: scrape_url,
-    };
-    const response = await axios(request_option).catch((error) => {
-      callback({ error: error, status_code: error.status_code });
-      return null;
-    });
-    const status_code = response.status;
-
-    if (status_code == SUCESSFUL) {
-      const html = response.data;
-      const $ = cheerio.load(html);
-      const anime_detail_wrapper = $(".anime-detail");
-      const title = anime_detail_wrapper.find(".film-name").text();
-      const image_url = anime_detail_wrapper.find(".film-poster-img").attr("src");
-      const description = anime_detail_wrapper.find(".film-description").children(".shorting").text();
-      const alternative_names = anime_detail_wrapper.find(".alias").text().split(",");
-      const meta_details_items = anime_detail_wrapper.find(".meta").find(".item");
-      let meta_items = {};
-      meta_details_items.each(async function (i, ele) {
-        const this_ele = $(this);
-        const type = this_ele.children(".item-title").text().replace(":", "").replace(" ", "_").toLowerCase();
-        const type_content =
-          type != "genre"
-            ? this_ele.children(".item-content").children("*").text()
-            : this_ele
-                .children(".item-content")
-                .children("*")
-                .text()
-                .replace(" ", "")
-                .replace(/([A-Z])/g, " $1")
-                .trim();
-
-        meta_items[type] = type_content;
-      });
-      const temp = slug.split("-");
-      const anime_id = temp[temp.length - 1];
-      const episodes_url = `${nine_anime_host}/ajax/episode/list/${anime_id}`;
-      const episode_request_option = {
-        method: "GET",
-        url: episodes_url,
-      };
-      const episode_response = await axios(episode_request_option).catch((error) => {
-        callback({ error: error, status_code: error.status_code });
-        return null;
-      });
-      const $$ = cheerio.load(episode_response.data.html);
-      let episodes = [];
-      $$(".episodes-ul>.ep-item").each(async function (i, ele) {
-        const this_ele = $(this);
-        const episode_id = JSON.stringify(this_ele.data("id"));
-        const episode_slug = this_ele.attr("href");
-        const episode_title = this_ele.attr("title");
-        const episode_number = JSON.stringify(this_ele.data("number"));
-
-        episodes.push({
-          episode_id,
-          episode_slug,
-          episode_title,
-          episode_number,
-        });
-      });
-      const referer = new URL(scrape_url);
-      const host = referer.hostname;
-
-      const response_data = {
-        status_code: status_code,
-        message: "successful",
-        data: {
-          host: host,
-          referer: referer,
-          url: scrape_url,
-          title: title,
-          image_url: image_url,
-          description: description,
-          alternative_names: alternative_names,
-          meta_items: meta_items,
-          slug: slug,
-          anime_id: anime_id,
-          episodes: episodes,
-        },
-      };
-
-      callback(response_data);
-      return null;
-    }
-
-    const response_data = {
-      status_code: CRASH,
-      message: CRASH_MSG,
-    };
-
-    callback(response_data);
-  }
   /***** Code in this comment block uses 9animetv.to as host *****/
 }
 
@@ -3037,6 +3037,87 @@ export class KaidoAnimeParser {
           referer: referer,
           url: scrape_url,
           sliders: sliders,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }
+
+  async get_anime_info(slug, callback) {
+    const scrape_url = `${kaido_host}/${slug}`;
+    const request_option = {
+      method: "GET",
+      url: scrape_url,
+    };
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data;
+      const $ = cheerio.load(html);
+      const anime_detail_wrapper = $(".anis-content");
+      const image_ele = anime_detail_wrapper.find(".film-poster-img");
+      const image_url = image_ele.attr("src");
+      const title = image_ele.attr("alt");
+      const description = anime_detail_wrapper.find(".film-description").children(".text").text().trim();
+      let alternative_names = [];
+      let meta_items = {};
+      let data = {};
+
+      // meta_items[type] = type_content;
+
+      $(".item-title").each(async function (i, ele) {
+        const this_ele = $(this);
+        const head = this_ele.find(".item-head").text().toLowerCase();
+        let name = "";
+
+        if (head == "overview:") return null;
+
+        if (head == "genres:") {
+          return null;
+        }
+
+        if (head == "producers:") {
+          return null;
+        }
+        const val = this_ele.find(".name").text();
+        print({ head, val });
+
+        if (head == "japanese:" || head == "synonyms:") {
+          alternative_names.push(val);
+          return null;
+        }
+      });
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+
+      const response_data = {
+        status_code: status_code,
+        message: "successful",
+        data: {
+          host: host,
+          referer: referer,
+          url: scrape_url,
+          title: title,
+          image_url: image_url,
+          description: description,
+          alternative_names: alternative_names,
+          meta_items: meta_items,
+          slug: slug,
+          anime_id: anime_id,
+          episodes: episodes,
         },
       };
 
@@ -3599,104 +3680,6 @@ export class KaidoAnimeParser {
           referer: referer,
           url: scrape_url,
           dates: dates,
-        },
-      };
-
-      callback(response_data);
-      return null;
-    }
-
-    const response_data = {
-      status_code: CRASH,
-      message: CRASH_MSG,
-    };
-
-    callback(response_data);
-  }
-
-  async get_anime_info(slug, callback) {
-    const scrape_url = `${nine_anime_host}/watch/${slug}`;
-    const request_option = {
-      method: "GET",
-      url: scrape_url,
-    };
-    const response = await axios(request_option).catch((error) => {
-      callback({ error: error, status_code: error.status_code });
-      return null;
-    });
-    const status_code = response.status;
-
-    if (status_code == SUCESSFUL) {
-      const html = response.data;
-      const $ = cheerio.load(html);
-      const anime_detail_wrapper = $(".anime-detail");
-      const title = anime_detail_wrapper.find(".film-name").text();
-      const image_url = anime_detail_wrapper.find(".film-poster-img").attr("src");
-      const description = anime_detail_wrapper.find(".film-description").children(".shorting").text();
-      const alternative_names = anime_detail_wrapper.find(".alias").text().split(",");
-      const meta_details_items = anime_detail_wrapper.find(".meta").find(".item");
-      let meta_items = {};
-      meta_details_items.each(async function (i, ele) {
-        const this_ele = $(this);
-        const type = this_ele.children(".item-title").text().replace(":", "").replace(" ", "_").toLowerCase();
-        const type_content =
-          type != "genre"
-            ? this_ele.children(".item-content").children("*").text()
-            : this_ele
-                .children(".item-content")
-                .children("*")
-                .text()
-                .replace(" ", "")
-                .replace(/([A-Z])/g, " $1")
-                .trim();
-
-        meta_items[type] = type_content;
-      });
-      const temp = slug.split("-");
-      const anime_id = temp[temp.length - 1];
-      const episodes_url = `${nine_anime_host}/ajax/episode/list/${anime_id}`;
-      const episode_request_option = {
-        method: "GET",
-        url: episodes_url,
-      };
-      const episode_response = await axios(episode_request_option).catch((error) => {
-        callback({ error: error, status_code: error.status_code });
-        return null;
-      });
-      const $$ = cheerio.load(episode_response.data.html);
-      let episodes = [];
-      $$(".episodes-ul>.ep-item").each(async function (i, ele) {
-        const this_ele = $(this);
-        const episode_id = JSON.stringify(this_ele.data("id"));
-        const episode_slug = this_ele.attr("href");
-        const episode_title = this_ele.attr("title");
-        const episode_number = JSON.stringify(this_ele.data("number"));
-
-        episodes.push({
-          episode_id,
-          episode_slug,
-          episode_title,
-          episode_number,
-        });
-      });
-      const referer = new URL(scrape_url);
-      const host = referer.hostname;
-
-      const response_data = {
-        status_code: status_code,
-        message: "successful",
-        data: {
-          host: host,
-          referer: referer,
-          url: scrape_url,
-          title: title,
-          image_url: image_url,
-          description: description,
-          alternative_names: alternative_names,
-          meta_items: meta_items,
-          slug: slug,
-          anime_id: anime_id,
-          episodes: episodes,
         },
       };
 

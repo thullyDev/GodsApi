@@ -719,11 +719,17 @@ app.get("/anime/:site/details/:slug/", async function (req, res) {
     });
   }
 
-  // if ( site === 2) {
-  // await zoro_anime_parser.get_recent(site, (results) => {
-  // data = results;
-  // });
-  // }
+  if (site == 2) {
+    await kaido_anime_parser.get_anime_info(slug, (results) => {
+      data = results;
+    });
+  }
+
+  if (site == 3) {
+    await kaido_anime_parser.get_anime_info(slug, (results) => {
+      data = results;
+    });
+  }
 
   res.status(data.status_code).json(data);
 });
