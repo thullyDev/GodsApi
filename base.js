@@ -1,7 +1,6 @@
 import express from "express";
 import morgan from "morgan";
 import axios from "axios";
-import cheerio from "cheerio";
 import favicon from "serve-favicon";
 import path from "path";
 import {
