@@ -2104,6 +2104,8 @@ export class ZoroAnimeParser {
         const anime = temp[temp.length - 1];
         const image_url = poster_wrapper.data("src");
         const title = poster_wrapper.attr("alt");
+        const jpname = this_ele.find(".dynamic-name").data("jname");
+        const pg_rate = this_ele.find(".tick-rate").text();
         let ticks = {};
         tick_item_wrapper.each(async function (i, ele) {
           const this_inner_ele = $(this);
@@ -2118,8 +2120,10 @@ export class ZoroAnimeParser {
           anime,
           slug,
           title,
+		  jpname,
           image_url,
           ticks,
+		  pg_rate,
           description,
           durataion,
           type,
@@ -2176,6 +2180,8 @@ export class ZoroAnimeParser {
         const date = this_ele.find(".scd-item:nth-child(3)").text().trim();
         const quality = this_ele.find(".scd-item>span.quality").text().trim();
         const title = image_ele.attr("alt");
+        const jpname = this_ele.find(".dynamic-name").data("jname");
+        const pg_rate = this_ele.find(".tick-rate").text();
         const image_url = image_ele.data("src");
         const description = info_wrapper.children(".desi-description").text().trim();
         const slug = info_wrapper.children(".desi-buttons").children("a").attr("href").split("/")[2];
@@ -2191,6 +2197,8 @@ export class ZoroAnimeParser {
         sliders.push({
           slug,
           title,
+		  jpname,
+		  pg_rate,
           image_url,
           description,
           ticks,
@@ -2931,6 +2939,8 @@ export class KaidoAnimeParser {
         const temp = slug.split("-");
         const anime = temp[temp.length - 1];
         const image_url = poster_wrapper.data("src");
+        const jpname = this_ele.find(".dynamic-name").data("jname");
+        const pg_rate = this_ele.find(".tick-rate").text();
         const title = poster_wrapper.attr("alt");
         let ticks = {};
         tick_item_wrapper.each(async function (i, ele) {
@@ -2940,12 +2950,14 @@ export class KaidoAnimeParser {
 
           ticks[id] = watch_type;
         });
-
+		
         animes.push({
           source,
           anime,
           slug,
           title,
+		  jpname,
+		  pg_rate,
           image_url,
           ticks,
           description,
@@ -3004,6 +3016,8 @@ export class KaidoAnimeParser {
         const date = this_ele.find(".scd-item:nth-child(3)").text().trim();
         const quality = this_ele.find(".scd-item>span.quality").text().trim();
         const title = image_ele.attr("alt");
+        const jpname = this_ele.find(".dynamic-name").data("jname");
+        const pg_rate = this_ele.find(".tick-rate").text();
         const image_url = image_ele.data("src");
         const description = info_wrapper.children(".desi-description").text().trim();
         const slug = info_wrapper.children(".desi-buttons").children("a").attr("href").split("/")[2];
@@ -3019,6 +3033,8 @@ export class KaidoAnimeParser {
         sliders.push({
           slug,
           title,
+		  jpname,
+		  pg_rate,
           image_url,
           description,
           ticks,
