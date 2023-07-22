@@ -2306,74 +2306,74 @@ export class ZoroAnimeParser {
       let alternative_names = [];
       let genres = [];
       let studios = [];
-      let views = ""
+      let views = "";
       let meta_items = { type, quality, views };
       let data = {};
 
       $(".item-title").each(async function (i, ele) {
         const this_ele = $(this);
         const head = this_ele.find(".item-head").text().toLowerCase();
-		
+
         let name = "";
 
         if (head == "overview:") return null;
 
         if (head == "genres:") {
-			let val = ""
-			this_ele.find(".name").each(async function (i, ele) {
-			  val = " " + $(this).text()
-			});
-			meta_items.genres = val
+          let val = "";
+          this_ele.find(".name").each(async function (i, ele) {
+            val = " " + $(this).text();
+          });
+          meta_items.genres = val;
           return null;
         }
 
         if (head == "producers:") {
-			let val = ""
-			this_ele.find(".name").each(async function (i, ele) {
-			  val = " " + $(this).text()
-			});
-			meta_items.producers = val
+          let val = "";
+          this_ele.find(".name").each(async function (i, ele) {
+            val = " " + $(this).text();
+          });
+          meta_items.producers = val;
           return null;
         }
-		
+
         if (head == "studios:") {
-			let val = ""
-			this_ele.find(".name").each(async function (i, ele) {
-			  val = " " + $(this).text()
-			});
-			meta_items.studios = val
+          let val = "";
+          this_ele.find(".name").each(async function (i, ele) {
+            val = " " + $(this).text();
+          });
+          meta_items.studios = val;
           return null;
         }
-		
+
         const val = this_ele.find(".name").text();
 
         if (head == "japanese:" || head == "synonyms:") {
           alternative_names.push(val);
           return null;
         }
-		
-		if (head == "aired:") {
-          meta_items.date_aired = val
+
+        if (head == "aired:") {
+          meta_items.date_aired = val;
           return null;
         }
-		
-		if (head == "status:") {
-          meta_items.status = val
+
+        if (head == "status:") {
+          meta_items.status = val;
           return null;
         }
-		
-		if (head == "premiered:") {
-          meta_items.premiered = val
+
+        if (head == "premiered:") {
+          meta_items.premiered = val;
           return null;
         }
-		
-		if (head == "duration:") {
-          meta_items.duration = val
+
+        if (head == "duration:") {
+          meta_items.duration = val;
           return null;
         }
-		
-		if (head == "mal score:") {
-          meta_items.scores = val
+
+        if (head == "mal score:") {
+          meta_items.scores = val;
           return null;
         }
       });
@@ -2396,20 +2396,20 @@ export class ZoroAnimeParser {
           sub,
         });
       });
-	  
-	  let series = [];
+
+      let series = [];
       $(".os-list>a").each(async function (i, ele) {
         const this_ele = $(this);
         const image_ele = this_ele.find(".season-poster");
-        const slug = this_ele.attr("href").replace("/", "")
+        const slug = this_ele.attr("href").replace("/", "");
         const anime_title = this_ele.attr("title");
-        const image_url = image_ele.css("background-image").replace("url(", "").replace(")", "")
-        const title = this_ele.find(".title").text()
+        const image_url = image_ele.css("background-image").replace("url(", "").replace(")", "");
+        const title = this_ele.find(".title").text();
 
         series.push({
           slug,
           title,
-		  anime_title,
+          anime_title,
           image_url,
         });
       });
@@ -2432,8 +2432,8 @@ export class ZoroAnimeParser {
           slug: slug,
           anime_id: anime_id,
           episodes: episodes,
-		  related_animes: related_animes,
-		  series: series,
+          related_animes: related_animes,
+          series: series,
         },
       };
 
@@ -3149,74 +3149,74 @@ export class KaidoAnimeParser {
       let alternative_names = [];
       let genres = [];
       let studios = [];
-      let views = ""
+      let views = "";
       let meta_items = { type, quality, views };
       let data = {};
 
       $(".item-title").each(async function (i, ele) {
         const this_ele = $(this);
         const head = this_ele.find(".item-head").text().toLowerCase();
-		
+
         let name = "";
 
         if (head == "overview:") return null;
 
         if (head == "genres:") {
-			let val = ""
-			this_ele.find(".name").each(async function (i, ele) {
-			  val = " " + $(this).text()
-			});
-			meta_items.genres = val
+          let val = "";
+          this_ele.find(".name").each(async function (i, ele) {
+            val = " " + $(this).text();
+          });
+          meta_items.genres = val;
           return null;
         }
 
         if (head == "producers:") {
-			let val = ""
-			this_ele.find(".name").each(async function (i, ele) {
-			  val = " " + $(this).text()
-			});
-			meta_items.producers = val
+          let val = "";
+          this_ele.find(".name").each(async function (i, ele) {
+            val = " " + $(this).text();
+          });
+          meta_items.producers = val;
           return null;
         }
-		
+
         if (head == "studios:") {
-			let val = ""
-			this_ele.find(".name").each(async function (i, ele) {
-			  val = " " + $(this).text()
-			});
-			meta_items.studios = val
+          let val = "";
+          this_ele.find(".name").each(async function (i, ele) {
+            val = " " + $(this).text();
+          });
+          meta_items.studios = val;
           return null;
         }
-		
+
         const val = this_ele.find(".name").text();
 
         if (head == "japanese:" || head == "synonyms:") {
           alternative_names.push(val);
           return null;
         }
-		
-		if (head == "aired:") {
-          meta_items.date_aired = val
+
+        if (head == "aired:") {
+          meta_items.date_aired = val;
           return null;
         }
-		
-		if (head == "status:") {
-          meta_items.status = val
+
+        if (head == "status:") {
+          meta_items.status = val;
           return null;
         }
-		
-		if (head == "premiered:") {
-          meta_items.premiered = val
+
+        if (head == "premiered:") {
+          meta_items.premiered = val;
           return null;
         }
-		
-		if (head == "duration:") {
-          meta_items.duration = val
+
+        if (head == "duration:") {
+          meta_items.duration = val;
           return null;
         }
-		
-		if (head == "mal score:") {
-          meta_items.scores = val
+
+        if (head == "mal score:") {
+          meta_items.scores = val;
           return null;
         }
       });
@@ -3239,20 +3239,20 @@ export class KaidoAnimeParser {
           sub,
         });
       });
-	  
-	  let series = [];
+
+      let series = [];
       $(".os-list>a").each(async function (i, ele) {
         const this_ele = $(this);
         const image_ele = this_ele.find(".season-poster");
-        const slug = this_ele.attr("href").replace("/", "")
+        const slug = this_ele.attr("href").replace("/", "");
         const anime_title = this_ele.attr("title");
-        const image_url = image_ele.css("background-image").replace("url(", "").replace(")", "")
-        const title = this_ele.find(".title").text()
+        const image_url = image_ele.css("background-image").replace("url(", "").replace(")", "");
+        const title = this_ele.find(".title").text();
 
         series.push({
           slug,
           title,
-		  anime_title,
+          anime_title,
           image_url,
         });
       });
@@ -3275,8 +3275,8 @@ export class KaidoAnimeParser {
           slug: slug,
           anime_id: anime_id,
           episodes: episodes,
-		  related_animes: related_animes,
-		  series: series,
+          related_animes: related_animes,
+          series: series,
         },
       };
 
@@ -3981,7 +3981,7 @@ export async function get_episode_sources(proxy, site, server_id, callback) {
     const link_id = temp[temp.length - 1];
     let sources_link = "";
 
-    if (source_host == "rapid-cloud.co") sources_link = "https://rapid-cloud.co/ajax/embed-6/getSources?id=" + link_id;
+    if (source_host == "rapid-cloud.co") sources_link = "https://rapid-cloud.co/ajax/embed-6-v2/getSources?id=" + link_id;
     if (source_host == "megacloud.tv") sources_link = "https://megacloud.tv/embed-2/ajax/e-1/getSources?id=" + link_id;
 
     const source_request_option = {
@@ -4024,19 +4024,34 @@ export async function get_episode_sources(proxy, site, server_id, callback) {
       return null;
     });
 
-    const encrypted_source = source_response.data.sources;
-    const encrypted_bk_source = source_response.data.sourcesBackup;
-    const decrypt_key = decrypt_response.data;
+    const raw_encrypted_source = source_response.data.sources;
+	const temp_encrypted_source = raw_encrypted_source.split("")
+    const indexes_decrypt_key = decrypt_response.data;
     let raw_sources = {};
     let sources = "";
-    let raw_bk_sources = {};
-    let bk_sources = "";
+	
+	let decrypt_key = ""
+	let encrypted_source = ""
+	
+	if (typeof indexes_decrypt_key != "string") { 
+		for (const index of indexes_decrypt_key) {
+			for (let i = index[0]; i < index[1]; i++) {
+				decrypt_key += temp_encrypted_source[i];
+				temp_encrypted_source[i] = null;
+			}
+		}
+		encrypted_source = temp_encrypted_source.filter((x) => x !== null).join("");
+	} else {
+		decrypt_key = indexes_decrypt_key
+		encrypted_source = raw_encrypted_source
+	}
+	
+	print({ decrypt_key, encrypted_source }) 
+
 
     try {
       raw_sources = CryptoJS.AES.decrypt(encrypted_source, decrypt_key);
       sources = JSON.parse(raw_sources.toString(CryptoJS.enc.Utf8));
-      raw_bk_sources = CryptoJS.AES.decrypt(encrypted_bk_source, decrypt_key);
-      bk_sources = JSON.parse(raw_sources.toString(CryptoJS.enc.Utf8));
     } catch {
       callback({ error: "couldn't get source", status_code: CRASH });
       return null;
@@ -4070,7 +4085,7 @@ export async function get_episode_sources(proxy, site, server_id, callback) {
       source_data.sourcesBackup = temp_source;
     } else {
       source_data.sources = sources;
-      source_data.sourcesBackup = bk_sources;
+      // source_data.sourcesBackup = bk_sources;
     }
 
     delete source_data.encrypted;
