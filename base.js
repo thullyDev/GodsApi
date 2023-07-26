@@ -760,7 +760,7 @@ app.get("/anime/:site/sources/:server_id/", async function (req, res) {
   await get_episode_sources(proxy, site, server_id, (results) => {
     data = results;
   });
-  
+
   res.status(data.status_code).json(data);
 });
 /************* ANIME=>end ****************/

@@ -2297,20 +2297,20 @@ export class ZoroAnimeParser {
       const quality = anime_detail_wrapper.find(".tick-item").first().text();
       const jpname = anime_detail_wrapper.find(".dynamic-name").data("jname");
       const image_url = image_ele.attr("src");
-      const title = image_ele.attr("alt");
+      const title = anime_detail_wrapper.find(".breadcrumb-item.dynamic-name.active").text();
       const temp = slug.split("-");
       const anime_id = temp[temp.length - 1];
       const site = 1;
       const episodes = await get_anime_episodes(site, anime_id);
       const description = anime_detail_wrapper.find(".film-description").children(".text").text().trim();
-      let alternative_names = [];
+      let alternative_names = [title, jpname];
       let genres = [];
       let studios = [];
       let views = "";
       let meta_items = { type, quality, views };
       let data = {};
 
-      $(".item-title").each(async function (i, ele) {
+      $(".item-title, .item-list").each(async function (i, ele) {
         const this_ele = $(this);
         const head = this_ele.find(".item-head").text().toLowerCase();
 
@@ -2320,28 +2320,30 @@ export class ZoroAnimeParser {
 
         if (head == "genres:") {
           let val = "";
-          this_ele.find(".name").each(async function (i, ele) {
-            val = " " + $(this).text();
+          this_ele.find("a").each(async function (i, ele) {
+            val += " " + $(this).text();
+
+            genres.push($(this).text().trim());
           });
-          meta_items.genres = val;
+          meta_items.genre = val.trim();
           return null;
         }
 
         if (head == "producers:") {
           let val = "";
           this_ele.find(".name").each(async function (i, ele) {
-            val = " " + $(this).text();
+            val += " " + $(this).text();
           });
-          meta_items.producers = val;
+          meta_items.producers = val.trim();
           return null;
         }
 
         if (head == "studios:") {
           let val = "";
           this_ele.find(".name").each(async function (i, ele) {
-            val = " " + $(this).text();
+            val += " " + $(this).text();
           });
-          meta_items.studios = val;
+          meta_items.studios = val.trim();
           return null;
         }
 
@@ -2432,6 +2434,7 @@ export class ZoroAnimeParser {
           slug: slug,
           anime_id: anime_id,
           episodes: episodes,
+          genres: genres,
           related_animes: related_animes,
           series: series,
         },
@@ -3140,20 +3143,20 @@ export class KaidoAnimeParser {
       const quality = anime_detail_wrapper.find(".tick-item").first().text();
       const jpname = anime_detail_wrapper.find(".dynamic-name").data("jname");
       const image_url = image_ele.attr("src");
-      const title = image_ele.attr("alt");
+      const title = anime_detail_wrapper.find(".breadcrumb-item.dynamic-name.active").text();
       const temp = slug.split("-");
       const anime_id = temp[temp.length - 1];
       const site = 1;
       const episodes = await get_anime_episodes(site, anime_id);
       const description = anime_detail_wrapper.find(".film-description").children(".text").text().trim();
-      let alternative_names = [];
+      let alternative_names = [title, jpname];
       let genres = [];
       let studios = [];
       let views = "";
       let meta_items = { type, quality, views };
       let data = {};
 
-      $(".item-title").each(async function (i, ele) {
+      $(".item-title, .item-list").each(async function (i, ele) {
         const this_ele = $(this);
         const head = this_ele.find(".item-head").text().toLowerCase();
 
@@ -3163,28 +3166,30 @@ export class KaidoAnimeParser {
 
         if (head == "genres:") {
           let val = "";
-          this_ele.find(".name").each(async function (i, ele) {
-            val = " " + $(this).text();
+          this_ele.find("a").each(async function (i, ele) {
+            val += " " + $(this).text();
+
+            genres.push($(this).text().trim());
           });
-          meta_items.genres = val;
+          meta_items.genre = val.trim();
           return null;
         }
 
         if (head == "producers:") {
           let val = "";
           this_ele.find(".name").each(async function (i, ele) {
-            val = " " + $(this).text();
+            val += " " + $(this).text();
           });
-          meta_items.producers = val;
+          meta_items.producers = val.trim();
           return null;
         }
 
         if (head == "studios:") {
           let val = "";
           this_ele.find(".name").each(async function (i, ele) {
-            val = " " + $(this).text();
+            val += " " + $(this).text();
           });
-          meta_items.studios = val;
+          meta_items.studios = val.trim();
           return null;
         }
 
@@ -3275,6 +3280,7 @@ export class KaidoAnimeParser {
           slug: slug,
           anime_id: anime_id,
           episodes: episodes,
+          genres: genres,
           related_animes: related_animes,
           series: series,
         },
@@ -3981,7 +3987,8 @@ export async function get_episode_sources(proxy, site, server_id, callback) {
     const link_id = temp[temp.length - 1];
     let sources_link = "";
 
-    if (source_host == "rapid-cloud.co") sources_link = "https://rapid-cloud.co/ajax/embed-6-v2/getSources?id=" + link_id;
+    if (source_host == "rapid-cloud.co")
+      sources_link = "https://rapid-cloud.co/ajax/embed-6-v2/getSources?id=" + link_id;
     if (source_host == "megacloud.tv") sources_link = "https://megacloud.tv/embed-2/ajax/e-1/getSources?id=" + link_id;
 
     const source_request_option = {
@@ -4025,29 +4032,28 @@ export async function get_episode_sources(proxy, site, server_id, callback) {
     });
 
     const raw_encrypted_source = source_response.data.sources;
-	const temp_encrypted_source = raw_encrypted_source.split("")
+    const temp_encrypted_source = raw_encrypted_source.split("");
     const indexes_decrypt_key = decrypt_response.data;
     let raw_sources = {};
     let sources = "";
-	
-	let decrypt_key = ""
-	let encrypted_source = ""
-	
-	if (typeof indexes_decrypt_key != "string") { 
-		for (const index of indexes_decrypt_key) {
-			for (let i = index[0]; i < index[1]; i++) {
-				decrypt_key += temp_encrypted_source[i];
-				temp_encrypted_source[i] = null;
-			}
-		}
-		encrypted_source = temp_encrypted_source.filter((x) => x !== null).join("");
-	} else {
-		decrypt_key = indexes_decrypt_key
-		encrypted_source = raw_encrypted_source
-	}
-	
-	print({ decrypt_key, encrypted_source }) 
 
+    let decrypt_key = "";
+    let encrypted_source = "";
+
+    if (typeof indexes_decrypt_key != "string") {
+      for (const index of indexes_decrypt_key) {
+        for (let i = index[0]; i < index[1]; i++) {
+          decrypt_key += temp_encrypted_source[i];
+          temp_encrypted_source[i] = null;
+        }
+      }
+      encrypted_source = temp_encrypted_source.filter((x) => x !== null).join("");
+    } else {
+      decrypt_key = indexes_decrypt_key;
+      encrypted_source = raw_encrypted_source;
+    }
+
+    print({ decrypt_key, encrypted_source });
 
     try {
       raw_sources = CryptoJS.AES.decrypt(encrypted_source, decrypt_key);
