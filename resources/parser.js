@@ -1931,7 +1931,7 @@ export class NineAnimeParser {
     callback(response_data);
   }
 
-  async get_anime_info(slug, callback) {
+  async get_anime_info(site, slug, callback) {
     const scrape_url = `${nine_anime_host}/watch/${slug}`;
     const request_option = {
       method: "GET",
@@ -1996,7 +1996,6 @@ export class NineAnimeParser {
       });
       const temp = slug.split("-");
       const anime_id = temp[temp.length - 1];
-      const site = 1;
       const episodes = await get_anime_episodes(site, anime_id);
       const referer = new URL(scrape_url);
       const host = referer.hostname;
@@ -2276,7 +2275,7 @@ export class ZoroAnimeParser {
     callback(response_data);
   }
 
-  async get_anime_info(slug, callback) {
+  async get_anime_info(site, slug, callback) {
     const scrape_url = `${zoro_host}/${slug}`;
     const request_option = {
       method: "GET",
@@ -2300,7 +2299,6 @@ export class ZoroAnimeParser {
       const title = anime_detail_wrapper.find(".breadcrumb-item.dynamic-name.active").text();
       const temp = slug.split("-");
       const anime_id = temp[temp.length - 1];
-      const site = 1;
       const episodes = await get_anime_episodes(site, anime_id);
       const description = anime_detail_wrapper.find(".film-description").children(".text").text().trim();
       let alternative_names = [title, jpname];
@@ -2467,7 +2465,7 @@ export class ZoroAnimeParser {
     if (status_code == SUCESSFUL) {
       const html = response.data;
       const $ = cheerio.load(html);
-	  const date = $("#schedule-date").data("value")
+      const date = $("#schedule-date").data("value");
       const referer = new URL(scrape_url);
       const host = referer.hostname;
 
@@ -3163,7 +3161,7 @@ export class KaidoAnimeParser {
     callback(response_data);
   }
 
-  async get_anime_info(slug, callback) {
+  async get_anime_info(site, slug, callback) {
     const scrape_url = `${kaido_host}/${slug}`;
     const request_option = {
       method: "GET",
@@ -3187,7 +3185,6 @@ export class KaidoAnimeParser {
       const title = anime_detail_wrapper.find(".breadcrumb-item.dynamic-name.active").text();
       const temp = slug.split("-");
       const anime_id = temp[temp.length - 1];
-      const site = 1;
       const episodes = await get_anime_episodes(site, anime_id);
       const description = anime_detail_wrapper.find(".film-description").children(".text").text().trim();
       let alternative_names = [title, jpname];
@@ -3354,7 +3351,7 @@ export class KaidoAnimeParser {
     if (status_code == SUCESSFUL) {
       const html = response.data;
       const $ = cheerio.load(html);
-	  const date = $("#schedule-date").data("value")
+      const date = $("#schedule-date").data("value");
       const referer = new URL(scrape_url);
       const host = referer.hostname;
 
@@ -3949,8 +3946,6 @@ export async function get_anime_episodes(site, anime_id) {
   if (site == 2) scrape_url = `${zoro_host}/ajax/v2/episode/list/${anime_id}`;
   if (site == 3) scrape_url = `${kaido_host}/ajax/episode/list/${anime_id}`;
 
-  print({ scrape_url });
-
   const request_option = {
     method: "GET",
     url: scrape_url,
@@ -3965,14 +3960,16 @@ export async function get_anime_episodes(site, anime_id) {
     const $ = cheerio.load(response.data.html);
 
     let episodes = [];
-    $(".episodes-ul>.ep-item").each(async function (i, ele) {
+    $(".ep-item").each(async function (i, ele) {
       const this_ele = $(this);
+	  const is_filler = this_ele.hasClass("ssl-item-filler")
       const episode_id = JSON.stringify(this_ele.data("id"));
       const episode_slug = this_ele.attr("href");
       const episode_title = this_ele.attr("title").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
       const episode_number = JSON.stringify(this_ele.data("number"));
 
       episodes.push({
+		is_filler,
         episode_id,
         episode_slug,
         episode_title,

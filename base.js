@@ -713,26 +713,25 @@ app.get("/anime/:site/details/:slug/", async function (req, res) {
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   if (site == 1) {
-    await nine_anime_parser.get_anime_info(slug, (results) => {
+    await nine_anime_parser.get_anime_info(site, slug, (results) => {
       data = results;
     });
   }
 
   if (site == 2) {
-    await kaido_anime_parser.get_anime_info(slug, (results) => {
+    await zoro_anime_parser.get_anime_info(site, slug, (results) => {
       data = results;
     });
   }
 
   if (site == 3) {
-    await zoro_anime_parser.get_anime_info(slug, (results) => {
+    await kaido_anime_parser.get_anime_info(site, slug, (results) => {
       data = results;
     });
   }
 
   res.status(data.status_code).json(data);
 });
-
 
 app.get("/anime/:site/next_episode/:slug/", async function (req, res) {
   const site = req.params.site;
