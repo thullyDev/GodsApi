@@ -3962,7 +3962,7 @@ export async function get_anime_episodes(site, anime_id) {
     let episodes = [];
     $(".ep-item").each(async function (i, ele) {
       const this_ele = $(this);
-	  const is_filler = this_ele.hasClass("ssl-item-filler")
+	  const is_filler = JSON.stringify(this_ele.hasClass("ssl-item-filler"))
       const episode_id = JSON.stringify(this_ele.data("id"));
       const episode_slug = this_ele.attr("href");
       const episode_title = this_ele.attr("title").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
