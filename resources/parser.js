@@ -2452,6 +2452,47 @@ export class ZoroAnimeParser {
     callback(response_data);
   }
 
+  async get_next_ep_date(slug, callback) {
+    const scrape_url = `${zoro_host}/watch/${slug}`;
+    const request_option = {
+      method: "GET",
+      url: scrape_url,
+    };
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data;
+      const $ = cheerio.load(html);
+	  const date = $("#schedule-date").data("value")
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+
+      const response_data = {
+        status_code: status_code,
+        message: "successful",
+        data: {
+          host: host,
+          referer: referer,
+          date: date,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }
+
   async get_recent_animes(page, callback) {
     const scrape_url = `${zoro_host}/recently-updated?page=${page}`;
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
@@ -3298,6 +3339,47 @@ export class KaidoAnimeParser {
     callback(response_data);
   }
 
+  async get_next_ep_date(slug, callback) {
+    const scrape_url = `${kaido_host}/watch/${slug}`;
+    const request_option = {
+      method: "GET",
+      url: scrape_url,
+    };
+    const response = await axios(request_option).catch((error) => {
+      callback({ error: error, status_code: error.status_code });
+      return null;
+    });
+    const status_code = response.status;
+
+    if (status_code == SUCESSFUL) {
+      const html = response.data;
+      const $ = cheerio.load(html);
+	  const date = $("#schedule-date").data("value")
+      const referer = new URL(scrape_url);
+      const host = referer.hostname;
+
+      const response_data = {
+        status_code: status_code,
+        message: "successful",
+        data: {
+          host: host,
+          referer: referer,
+          date: date,
+        },
+      };
+
+      callback(response_data);
+      return null;
+    }
+
+    const response_data = {
+      status_code: CRASH,
+      message: CRASH_MSG,
+    };
+
+    callback(response_data);
+  }
+
   async get_anime_results(keyword, callback) {
     const scrape_url = `${kaido_host}/ajax/search/suggest?keyword=${keyword}`;
     const request_option = {
@@ -3864,8 +3946,10 @@ export class KaidoAnimeParser {
 
 export async function get_anime_episodes(site, anime_id) {
   let scrape_url = `${nine_anime_host}/ajax/episode/list/${anime_id}`;
-  if (site == 2) scrape_url = `${zoro_host}/ajax/v2/episode/list/{anime_id}`;
+  if (site == 2) scrape_url = `${zoro_host}/ajax/v2/episode/list/${anime_id}`;
   if (site == 3) scrape_url = `${kaido_host}/ajax/episode/list/${anime_id}`;
+
+  print({ scrape_url });
 
   const request_option = {
     method: "GET",

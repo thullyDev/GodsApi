@@ -725,7 +725,28 @@ app.get("/anime/:site/details/:slug/", async function (req, res) {
   }
 
   if (site == 3) {
-    await kaido_anime_parser.get_anime_info(slug, (results) => {
+    await zoro_anime_parser.get_anime_info(slug, (results) => {
+      data = results;
+    });
+  }
+
+  res.status(data.status_code).json(data);
+});
+
+
+app.get("/anime/:site/next_episode/:slug/", async function (req, res) {
+  const site = req.params.site;
+  const slug = req.params.slug;
+  let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
+
+  if (site == 2) {
+    await kaido_anime_parser.get_next_ep_date(slug, (results) => {
+      data = results;
+    });
+  }
+
+  if (site == 3) {
+    await zoro_anime_parser.get_next_ep_date(slug, (results) => {
       data = results;
     });
   }
