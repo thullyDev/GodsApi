@@ -1627,7 +1627,7 @@ export class NineAnimeParser {
       const page = $(".ap__-input>.input-page").val();
       const pages = $(".ap__-input>.btn.btn-sm.btn-blank").text().replace("of ", "").replace("page", "");
       let animes = [];
-      $(".film_list-wrap>.flw-item>.film-poster").each(async function (i, ele) {
+      $(".film_list-wrap>.flw-item").each(async function (i, ele) {
         const this_ele = $(this);
         const tick_item_wrapper = this_ele.find(".tick-item");
         const poster_wrapper = this_ele.find(".film-poster-img");
@@ -1636,6 +1636,7 @@ export class NineAnimeParser {
         const temp = slug.split("-");
         const anime = temp[temp.length - 1];
         const image_url = poster_wrapper.data("src");
+        const jpname = this_ele.find(".dynamic-name").data("jname");
         const title = poster_wrapper.attr("alt");
         let ticks = {};
         tick_item_wrapper.each(async function (i, ele) {
@@ -1646,11 +1647,14 @@ export class NineAnimeParser {
           ticks[id] = watch_type;
         });
 
+        print({ jpname });
+
         animes.push({
           source,
           anime,
           slug,
           title,
+          jpname,
           image_url,
           ticks,
         });
@@ -2691,6 +2695,7 @@ export class ZoroAnimeParser {
         const anime = temp[temp.length - 1];
         const image_url = poster_wrapper.data("src");
         const title = poster_wrapper.attr("alt");
+        const jpname = this_ele.find(".dynamic-name").data("jname");
         let ticks = {};
         tick_item_wrapper.each(async function (i, ele) {
           const this_inner_ele = $(this);
@@ -2699,12 +2704,14 @@ export class ZoroAnimeParser {
 
           ticks[id] = watch_type;
         });
+        print({ jpname });
 
         animes.push({
           source,
           anime,
           slug,
           title,
+          jpname,
           image_url,
           ticks,
         });
@@ -3962,14 +3969,14 @@ export async function get_anime_episodes(site, anime_id) {
     let episodes = [];
     $(".ep-item").each(async function (i, ele) {
       const this_ele = $(this);
-	  const is_filler = JSON.stringify(this_ele.hasClass("ssl-item-filler"))
+      const is_filler = JSON.stringify(this_ele.hasClass("ssl-item-filler"));
       const episode_id = JSON.stringify(this_ele.data("id"));
       const episode_slug = this_ele.attr("href");
       const episode_title = this_ele.attr("title").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
       const episode_number = JSON.stringify(this_ele.data("number"));
 
       episodes.push({
-		is_filler,
+        is_filler,
         episode_id,
         episode_slug,
         episode_title,
@@ -4080,6 +4087,8 @@ export async function get_episode_sources(proxy, site, server_id, callback) {
       callback({ error: error, status_code: error.status_code });
       return null;
     });
+
+    print(source_response);
 
     if (source_response.data.encrypted == false) {
       const source_data = source_response.data;
