@@ -2964,7 +2964,7 @@ export class KaidoAnimeParser {
         return null;
       }
 	  let page = "1"
-	  let pages = "0"
+	  let pages = "1"
 	  
 	  try {
 		  page = $(".page-item.active>.page-link").text();
