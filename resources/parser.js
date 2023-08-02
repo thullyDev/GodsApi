@@ -1647,8 +1647,6 @@ export class NineAnimeParser {
           ticks[id] = watch_type;
         });
 
-        print({ jpname });
-
         animes.push({
           source,
           anime,
@@ -2593,6 +2591,29 @@ export class ZoroAnimeParser {
     callback(response_data);
   }
 
+  async get_search_animes(data, callback) {
+	  const keyword = data.keyword != "" ? `keyword=${data.keyword}` : ""
+	  const type = data.type != "" ? `type=${data.type}` : ""
+	  const year = data.year != "" ? `sy=${data.year}` : ""
+	  const status = data.status != "" ? `status=${data.status}` : ""
+	  const language = data.language != "" ? `language=${data.language}` : ""
+	  const genre = data.genre != "" ? `genre=${data.genre}` : ""
+	  let scrape_url = `${zoro_host}/search`
+	  
+	  let is_first = true
+	  for(let item of [ keyword, type, year, status, language, genre ]) {
+		  if (item != "") {
+			  scrape_url += is_first ? "?" +  item : "$" + item
+			  
+			  if (is_first) is_first = false
+		  }
+	  }
+	  
+	const response_data = await this.zoro_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
   /***** Code in this comment block uses 9animetv.to as host *****/
   async get_letter_animes(letter, page, callback) {
     const scrape_url = `${nine_anime_host}/az-list/${letter}?page=${page}`;
@@ -2635,85 +2656,6 @@ export class ZoroAnimeParser {
           image_url,
           year,
           episodes,
-        });
-      });
-
-      const response_data = {
-        status_code: status_code,
-        message: "successful",
-        data: {
-          host: host,
-          referer: referer,
-          url: scrape_url,
-          animes: animes,
-          meta_data: {
-            page: page,
-            pages: pages,
-          },
-        },
-      };
-
-      callback(response_data);
-      return null;
-    }
-
-    const response_data = {
-      status_code: CRASH,
-      message: CRASH_MSG,
-    };
-
-    callback(response_data);
-  }
-
-  async get_search_animes(data, callback) {
-    const scrape_url = `${nine_anime_host}/filter?keyword=${data.keyword}&type=${data.type}&status=${data.status}&season=${data.season}&language=${data.language}&sort=${data.sort}&year=${data.year}&genre=${data.genre}`;
-    const request_option = {
-      method: "GET",
-      url: scrape_url,
-    };
-    const response = await axios(request_option).catch((error) => {
-      callback({ error: error, status_code: error.status_code });
-      return null;
-    });
-    const status_code = response.status;
-
-    if (status_code == SUCESSFUL) {
-      const html = response.data;
-      const $ = cheerio.load(html);
-      const referer = new URL(scrape_url);
-      const host = referer.hostname;
-      const page = $(".ap__-input>.input-page").val();
-      const pages = $(".ap__-input>.btn.btn-sm.btn-blank").text().replace("of ", "").replace("page", "");
-      let animes = [];
-      $(".film_list-wrap>.flw-item>.film-poster").each(async function (i, ele) {
-        const this_ele = $(this);
-        const tick_item_wrapper = this_ele.find(".tick-item");
-        const poster_wrapper = this_ele.find(".film-poster-img");
-        const source = this_ele.find(".film-poster-ahref").attr("href");
-        const slug = source.split("/")[2];
-        const temp = slug.split("-");
-        const anime = temp[temp.length - 1];
-        const image_url = poster_wrapper.data("src");
-        const title = poster_wrapper.attr("alt");
-        const jpname = this_ele.find(".dynamic-name").data("jname");
-        let ticks = {};
-        tick_item_wrapper.each(async function (i, ele) {
-          const this_inner_ele = $(this);
-          const id = this_inner_ele.attr("class").split(" ")[1].split("-")[1];
-          const watch_type = this_inner_ele.text().trim();
-
-          ticks[id] = watch_type;
-        });
-        print({ jpname });
-
-        animes.push({
-          source,
-          anime,
-          slug,
-          title,
-          jpname,
-          image_url,
-          ticks,
         });
       });
 
@@ -3021,9 +2963,16 @@ export class KaidoAnimeParser {
         callback(response_data);
         return null;
       }
-
-      const page = $(".page-item.active>.page-link").text();
-      const pages = $(".page-item:last-child>.page-link").attr("href").split("?page=")[1];
+	  let page = "1"
+	  let pages = "0"
+	  
+	  try {
+		  page = $(".page-item.active>.page-link").text();
+		  pages = $(".page-item:last-child>.page-link").attr("href").split("?page=")[1];
+	  } catch(e) {
+		  page = "1"
+		  pages = "0"
+	  }
 
       let animes = [];
       $(".film_list-wrap>.flw-item").each(async function (i, ele) {
@@ -3550,6 +3499,29 @@ export class KaidoAnimeParser {
     callback(response_data);
   }
 
+  async get_search_animes(data, callback) {
+	  const keyword = data.keyword != "" ? `keyword=${data.keyword}` : ""
+	  const type = data.type != "" ? `type=${data.type}` : ""
+	  const year = data.year != "" ? `sy=${data.year}` : ""
+	  const status = data.status != "" ? `status=${data.status}` : ""
+	  const language = data.language != "" ? `language=${data.language}` : ""
+	  const genre = data.genre != "" ? `genre=${data.genre}` : ""
+	  let scrape_url = `${kaido_host}/search`
+	  
+	  let is_first = true
+	  for(let item of [ keyword, type, year, status, language, genre ]) {
+		  if (item != "") {
+			  scrape_url += is_first ? "?" +  item : "$" + item
+			  
+			  if (is_first) is_first = false
+		  }
+	  }
+	  
+	const response_data = await this.kaido_browsing_page_parser(scrape_url);
+
+    callback(response_data);
+  }
+
   /***** Code in this comment block uses 9animetv.to as host *****/
   async get_letter_animes(letter, page, callback) {
     const scrape_url = `${nine_anime_host}/az-list/${letter}?page=${page}`;
@@ -3592,82 +3564,6 @@ export class KaidoAnimeParser {
           image_url,
           year,
           episodes,
-        });
-      });
-
-      const response_data = {
-        status_code: status_code,
-        message: "successful",
-        data: {
-          host: host,
-          referer: referer,
-          url: scrape_url,
-          animes: animes,
-          meta_data: {
-            page: page,
-            pages: pages,
-          },
-        },
-      };
-
-      callback(response_data);
-      return null;
-    }
-
-    const response_data = {
-      status_code: CRASH,
-      message: CRASH_MSG,
-    };
-
-    callback(response_data);
-  }
-
-  async get_search_animes(data, callback) {
-    const scrape_url = `${nine_anime_host}/filter?keyword=${data.keyword}&type=${data.type}&status=${data.status}&season=${data.season}&language=${data.language}&sort=${data.sort}&year=${data.year}&genre=${data.genre}`;
-    const request_option = {
-      method: "GET",
-      url: scrape_url,
-    };
-    const response = await axios(request_option).catch((error) => {
-      callback({ error: error, status_code: error.status_code });
-      return null;
-    });
-    const status_code = response.status;
-
-    if (status_code == SUCESSFUL) {
-      const html = response.data;
-      const $ = cheerio.load(html);
-      const referer = new URL(scrape_url);
-      const host = referer.hostname;
-      const page = $(".ap__-input>.input-page").val();
-      const pages = $(".ap__-input>.btn.btn-sm.btn-blank").text().replace("of ", "").replace("page", "");
-      let animes = [];
-      $(".film_list-wrap>.flw-item>.film-poster").each(async function (i, ele) {
-        const this_ele = $(this);
-        const tick_item_wrapper = this_ele.find(".tick-item");
-        const poster_wrapper = this_ele.find(".film-poster-img");
-        const source = this_ele.find(".film-poster-ahref").attr("href");
-        const slug = source.split("/")[2];
-        const temp = slug.split("-");
-        const anime = temp[temp.length - 1];
-        const image_url = poster_wrapper.data("src");
-        const title = poster_wrapper.attr("alt");
-        let ticks = {};
-        tick_item_wrapper.each(async function (i, ele) {
-          const this_inner_ele = $(this);
-          const id = this_inner_ele.attr("class").split(" ")[1].split("-")[1];
-          const watch_type = this_inner_ele.text().trim();
-
-          ticks[id] = watch_type;
-        });
-
-        animes.push({
-          source,
-          anime,
-          slug,
-          title,
-          image_url,
-          ticks,
         });
       });
 

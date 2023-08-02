@@ -176,9 +176,9 @@ app.get("/anime/:site/filter/", async function (req, res) {
   const site = req.params.site;
   const keyword = req.query.keyword;
   const type = req.query.type;
-  const status = "all";
+  const status = "";
   const language = req.query.language;
-  const sort = "default";
+  const sort = "";
   const year = req.query.year;
   const season = req.query.season;
   const genre = req.query.genre;
@@ -202,11 +202,41 @@ app.get("/anime/:site/filter/", async function (req, res) {
     );
   }
 
-  // if ( site === 2) {
-  // await zoro_anime_parser.get_recent(site, (results) => {
-  // data = results;
-  // });
-  // }
+  if (site == 2) {
+    await zoro_anime_parser.get_search_animes(
+      {
+        keyword: safify(keyword),
+        type: safify(type),
+        status: safify(status),
+        season: safify(season),
+        language: safify(language),
+        sort: safify(sort),
+        year: safify(year),
+        genre: safify(genre),
+      },
+      (results) => {
+        data = results;
+      }
+    );
+  }
+
+  if (site == 3) {
+    await kaido_anime_parser.get_search_animes(
+      {
+        keyword: safify(keyword),
+        type: safify(type),
+        status: safify(status),
+        season: safify(season),
+        language: safify(language),
+        sort: safify(sort),
+        year: safify(year),
+        genre: safify(genre),
+      },
+      (results) => {
+        data = results;
+      }
+    );
+  }
 
   res.status(data.status_code).json(data);
 });
