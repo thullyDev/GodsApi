@@ -3501,7 +3501,7 @@ export class KaidoAnimeParser {
   }
 
   async get_search_animes(data, callback) {
-    const keyword = data.keyword != "" ? `keyword=${data.keyword}` : "";
+    const keyword = data.keyword != "" ? `keyword=%20${data.keyword}` : "";
     const type = data.type != "" ? `type=${data.type}` : "";
     const year = data.year != "" ? `sy=${data.year}` : "";
     const status = data.status != "" ? `status=${data.status}` : "";
