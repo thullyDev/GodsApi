@@ -2938,7 +2938,7 @@ export class ZoroAnimeParser {
 }
 
 export class KaidoAnimeParser {
-  async kaido_browsing_page_parser(scrape_url, search=false) {
+  async kaido_browsing_page_parser(scrape_url, search = false) {
     const request_option = {
       method: "GET",
       url: scrape_url,
@@ -2969,7 +2969,9 @@ export class KaidoAnimeParser {
 
       try {
         page = $(".page-item.active>.page-link").text();
-        pages = !search ? $(".page-item:last-child>.page-link").attr("href").split("?page=")[1] : $(".page-item:last-child>.page-link").attr("href").split("&page=")[1];
+        pages = !search
+          ? $(".page-item:last-child>.page-link").attr("href").split("?page=")[1]
+          : $(".page-item:last-child>.page-link").attr("href").split("&page=")[1];
       } catch (e) {
         page = "1";
         pages = "1";
@@ -3501,24 +3503,24 @@ export class KaidoAnimeParser {
   }
 
   async get_search_animes(data, callback) {
-    const keyword = data.keyword != "" ? `keyword=%20${data.keyword}` : "";
+    const keyword = data.keyword != "" ? `keyword=+${data.keyword}` : "";
     const type = data.type != "" ? `type=${data.type}` : "";
     const year = data.year != "" ? `sy=${data.year}` : "";
     const status = data.status != "" ? `status=${data.status}` : "";
     const language = data.language != "" ? `language=${data.language}` : "";
-    const genre = data.genre != "" ? `genre=${data.genre}` : "";
+    const genre = data.genre != "" ? `genres=${data.genre}` : "";
     const page = data.page != "" ? `page=${data.page}` : "";
     let scrape_url = `${kaido_host}/search`;
 
     let is_first = true;
     for (let item of [keyword, type, year, status, language, genre, page]) {
       if (item != "") {
-        scrape_url += is_first ? "?" + item : "$" + item;
+        scrape_url += is_first ? "?" + item : "&" + item;
 
         if (is_first) is_first = false;
       }
     }
-
+	
     const response_data = await this.kaido_browsing_page_parser(scrape_url, true);
 
     callback(response_data);
