@@ -2592,24 +2592,25 @@ export class ZoroAnimeParser {
   }
 
   async get_search_animes(data, callback) {
-	  const keyword = data.keyword != "" ? `keyword=${data.keyword}` : ""
-	  const type = data.type != "" ? `type=${data.type}` : ""
-	  const year = data.year != "" ? `sy=${data.year}` : ""
-	  const status = data.status != "" ? `status=${data.status}` : ""
-	  const language = data.language != "" ? `language=${data.language}` : ""
-	  const genre = data.genre != "" ? `genre=${data.genre}` : ""
-	  let scrape_url = `${zoro_host}/search`
-	  
-	  let is_first = true
-	  for(let item of [ keyword, type, year, status, language, genre ]) {
-		  if (item != "") {
-			  scrape_url += is_first ? "?" +  item : "$" + item
-			  
-			  if (is_first) is_first = false
-		  }
-	  }
-	  
-	const response_data = await this.zoro_browsing_page_parser(scrape_url);
+    const keyword = data.keyword != "" ? `keyword=${data.keyword}` : "";
+    const type = data.type != "" ? `type=${data.type}` : "";
+    const year = data.year != "" ? `sy=${data.year}` : "";
+    const status = data.status != "" ? `status=${data.status}` : "";
+    const language = data.language != "" ? `language=${data.language}` : "";
+    const genre = data.genre != "" ? `genre=${data.genre}` : "";
+    const page = data.page != "" ? `page=${data.page}` : "";
+    let scrape_url = `${zoro_host}/search`;
+
+    let is_first = true;
+    for (let item of [keyword, type, year, status, language, genre, page]) {
+      if (item != "") {
+        scrape_url += is_first ? "?" + item : "$" + item;
+
+        if (is_first) is_first = false;
+      }
+    }
+	
+    const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }
@@ -2963,16 +2964,16 @@ export class KaidoAnimeParser {
         callback(response_data);
         return null;
       }
-	  let page = "1"
-	  let pages = "1"
-	  
-	  try {
-		  page = $(".page-item.active>.page-link").text();
-		  pages = $(".page-item:last-child>.page-link").attr("href").split("?page=")[1];
-	  } catch(e) {
-		  page = "1"
-		  pages = "0"
-	  }
+      let page = "1";
+      let pages = "1";
+
+      try {
+        page = $(".page-item.active>.page-link").text();
+        pages = $(".page-item:last-child>.page-link").attr("href").split("?page=")[1];
+      } catch (e) {
+        page = "1";
+        pages = "1";
+      }
 
       let animes = [];
       $(".film_list-wrap>.flw-item").each(async function (i, ele) {
@@ -3500,24 +3501,25 @@ export class KaidoAnimeParser {
   }
 
   async get_search_animes(data, callback) {
-	  const keyword = data.keyword != "" ? `keyword=${data.keyword}` : ""
-	  const type = data.type != "" ? `type=${data.type}` : ""
-	  const year = data.year != "" ? `sy=${data.year}` : ""
-	  const status = data.status != "" ? `status=${data.status}` : ""
-	  const language = data.language != "" ? `language=${data.language}` : ""
-	  const genre = data.genre != "" ? `genre=${data.genre}` : ""
-	  let scrape_url = `${kaido_host}/search`
-	  
-	  let is_first = true
-	  for(let item of [ keyword, type, year, status, language, genre ]) {
-		  if (item != "") {
-			  scrape_url += is_first ? "?" +  item : "$" + item
-			  
-			  if (is_first) is_first = false
-		  }
-	  }
-	  
-	const response_data = await this.kaido_browsing_page_parser(scrape_url);
+    const keyword = data.keyword != "" ? `keyword=${data.keyword}` : "";
+    const type = data.type != "" ? `type=${data.type}` : "";
+    const year = data.year != "" ? `sy=${data.year}` : "";
+    const status = data.status != "" ? `status=${data.status}` : "";
+    const language = data.language != "" ? `language=${data.language}` : "";
+    const genre = data.genre != "" ? `genre=${data.genre}` : "";
+    const page = data.page != "" ? `page=${data.page}` : "";
+    let scrape_url = `${kaido_host}/search`;
+
+    let is_first = true;
+    for (let item of [keyword, type, year, status, language, genre, page]) {
+      if (item != "") {
+        scrape_url += is_first ? "?" + item : "$" + item;
+
+        if (is_first) is_first = false;
+      }
+    }
+
+    const response_data = await this.kaido_browsing_page_parser(scrape_url);
 
     callback(response_data);
   }

@@ -182,6 +182,7 @@ app.get("/anime/:site/filter/", async function (req, res) {
   const year = req.query.year;
   const season = req.query.season;
   const genre = req.query.genre;
+  const page = req.query.page;
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   if (site == 1) {
@@ -195,6 +196,7 @@ app.get("/anime/:site/filter/", async function (req, res) {
         sort: safify(sort),
         year: safify(year),
         genre: safify(genre),
+		page: safify(page),
       },
       (results) => {
         data = results;
@@ -213,6 +215,7 @@ app.get("/anime/:site/filter/", async function (req, res) {
         sort: safify(sort),
         year: safify(year),
         genre: safify(genre),
+		page: safify(page),
       },
       (results) => {
         data = results;
@@ -231,6 +234,7 @@ app.get("/anime/:site/filter/", async function (req, res) {
         sort: safify(sort),
         year: safify(year),
         genre: safify(genre),
+		page: safify(page),
       },
       (results) => {
         data = results;
