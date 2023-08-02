@@ -2609,7 +2609,7 @@ export class ZoroAnimeParser {
         if (is_first) is_first = false;
       }
     }
-	
+
     const response_data = await this.zoro_browsing_page_parser(scrape_url);
 
     callback(response_data);
