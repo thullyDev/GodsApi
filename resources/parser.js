@@ -2938,7 +2938,7 @@ export class ZoroAnimeParser {
 }
 
 export class KaidoAnimeParser {
-  async kaido_browsing_page_parser(scrape_url) {
+  async kaido_browsing_page_parser(scrape_url, search=false) {
     const request_option = {
       method: "GET",
       url: scrape_url,
@@ -2969,7 +2969,7 @@ export class KaidoAnimeParser {
 
       try {
         page = $(".page-item.active>.page-link").text();
-        pages = $(".page-item:last-child>.page-link").attr("href").split("?page=")[1];
+        pages = !search ? $(".page-item:last-child>.page-link").attr("href").split("?page=")[1] : $(".page-item:last-child>.page-link").attr("href").split("&page=")[1];
       } catch (e) {
         page = "1";
         pages = "1";
@@ -3519,7 +3519,7 @@ export class KaidoAnimeParser {
       }
     }
 
-    const response_data = await this.kaido_browsing_page_parser(scrape_url);
+    const response_data = await this.kaido_browsing_page_parser(scrape_url, true);
 
     callback(response_data);
   }

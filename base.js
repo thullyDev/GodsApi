@@ -183,7 +183,7 @@ app.get("/anime/:site/filter/", async function (req, res) {
   const season = req.query.season;
   const genre = req.query.genre;
   const page = req.query.page;
-  
+
   let data = { status_code: NOT_FOUND, message: NOT_FOUND_MSG };
 
   if (site == 1) {
