@@ -1,7 +1,6 @@
 import axios from "axios";
 import cheerio from "cheerio";
 import CryptoJS from "crypto-js";
-import { encode, decode } from "node-base64-image";
 import {
   SUCESSFUL,
   NOT_FOUND,
