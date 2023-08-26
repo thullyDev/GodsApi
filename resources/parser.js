@@ -2156,7 +2156,7 @@ export class ZoroAnimeParser {
         const duration = this_ele.find(".scd-item:nth-child(2)").text().trim();
         const date = this_ele.find(".scd-item:nth-child(3)").text().trim();
         const quality = this_ele.find(".scd-item>span.quality").text().trim();
-        const title = image_ele.attr("alt");
+        const title = this_ele.find(".dynamic-name").text()
         const jpname = this_ele.find(".dynamic-name").data("jname");
         const pg_rate = this_ele.find(".tick-rate").text();
         const image_url = image_ele.data("src");
@@ -3067,7 +3067,7 @@ export class KaidoAnimeParser {
         const duration = this_ele.find(".scd-item:nth-child(2)").text().trim();
         const date = this_ele.find(".scd-item:nth-child(3)").text().trim();
         const quality = this_ele.find(".scd-item>span.quality").text().trim();
-        const title = image_ele.attr("alt");
+        const title = this_ele.find(".dynamic-name").text()
         const jpname = this_ele.find(".dynamic-name").data("jname");
         const pg_rate = this_ele.find(".tick-rate").text();
         const image_url = image_ele.data("src");
@@ -3520,7 +3520,7 @@ export class KaidoAnimeParser {
         if (is_first) is_first = false;
       }
     }
-	
+
     const response_data = await this.kaido_browsing_page_parser(scrape_url, true);
 
     callback(response_data);
@@ -3983,12 +3983,13 @@ export async function get_episode_sources(proxy, site, server_id, callback) {
       method: "GET",
       url: sources_link,
     };
+    print({ source_request_option });
     const source_response = await axios(source_request_option).catch((error) => {
       callback({ error: error, status_code: error.status_code });
       return null;
     });
 
-    print(source_response);
+    print({ source_response });
 
     if (source_response.data.encrypted == false) {
       const source_data = source_response.data;
