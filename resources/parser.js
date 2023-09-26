@@ -2156,7 +2156,7 @@ export class ZoroAnimeParser {
         const duration = this_ele.find(".scd-item:nth-child(2)").text().trim();
         const date = this_ele.find(".scd-item:nth-child(3)").text().trim();
         const quality = this_ele.find(".scd-item>span.quality").text().trim();
-        const title = this_ele.find(".dynamic-name").text()
+        const title = this_ele.find(".dynamic-name").text();
         const jpname = this_ele.find(".dynamic-name").data("jname");
         const pg_rate = this_ele.find(".tick-rate").text();
         const image_url = image_ele.data("src");
@@ -3067,7 +3067,7 @@ export class KaidoAnimeParser {
         const duration = this_ele.find(".scd-item:nth-child(2)").text().trim();
         const date = this_ele.find(".scd-item:nth-child(3)").text().trim();
         const quality = this_ele.find(".scd-item>span.quality").text().trim();
-        const title = this_ele.find(".dynamic-name").text()
+        const title = this_ele.find(".dynamic-name").text();
         const jpname = this_ele.find(".dynamic-name").data("jname");
         const pg_rate = this_ele.find(".tick-rate").text();
         const image_url = image_ele.data("src");
