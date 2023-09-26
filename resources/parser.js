@@ -1608,7 +1608,8 @@ export class NineAnimeParser {
   }
 
   async get_search_animes(data, callback) {
-    const scrape_url = `${nine_anime_host}/filter?keyword=${data.keyword}&type=${data.type}&status=${data.status}&season=${data.season}&language=${data.language}&sort=${data.sort}&year=${data.year}&genre=${data.genre}`;
+	  print(data)
+    const scrape_url = `${nine_anime_host}/filter?keyword=${data.keyword}&type=${data.type}&status=${data.status}&season=${data.season}&language=${data.language}&sort=${data.sort}&year=${data.year}&genre=${data.genre}&page=${data.page}`;
     const request_option = {
       method: "GET",
       url: scrape_url,
