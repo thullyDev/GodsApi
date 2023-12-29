@@ -4010,8 +4010,8 @@ export async function get_episode_sources(proxy, site, server_id, callback) {
 
     let decrypt_key_link = "";
 
-    if (site == "3" || site == "1") decrypt_key_link = "https://raw.githubusercontent.com/enimax-anime/key/e0/key.txt";
-    if (site == "2") decrypt_key_link = "https://raw.githubusercontent.com/enimax-anime/key/e6/key.txt";
+    if (site == "3" || site == "1") decrypt_key_link = "http://zoro-keys.freeddns.org/keys/e0/key.txt";
+    if (site == "2") decrypt_key_link = "http://zoro-keys.freeddns.org/keys/e6/key.txt";
 
     const decrypt_request_option = {
       method: "GET",
